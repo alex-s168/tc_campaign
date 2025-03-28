@@ -9,7 +9,7 @@ def check_output($scratch_space: [Int], tick: Int, inputs: [Int], outputs: [Int]
     let opcode = inputs[0]
     let is_jmp = inputs[1]
 
-    var sign_ext_imm = ~((opcode >> 3) & 0b1)
+    var sign_ext_imm = (~(opcode >> 3)) & 0b1
     if opcode == 0b1001 {
         sign_ext_imm = 0b1
     }
