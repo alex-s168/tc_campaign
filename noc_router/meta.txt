@@ -2,12 +2,22 @@ kind = sequential
 title = "NoC Router"
 size = [-256, -256, 255, 255]
 copy_solution_to_factory = "NoC/Router"
-input_labels = [["P0> XY",],["P0> Data",],["P0> Valid",],
-                ["P1> XY",],["P1> Data",],["P1> Valid",],
-                ["P2> Data",],["P2> Valid",],["P2> XY",],
-                ["P3> XY",],["P4> XY",],["P3> Data",],["P4> Data",],
-                ["P4> Valid",],["P3> Valid",]]
-output_labels = ["P0> Done", "P1> Done", "P2> Done", "P3> Done", "P4> Done"]
+input_labels = ["P0> XY","P0> Data","P0> Valid",
+                "P1> XY","P1> Data","P1> Valid",
+                "P2> Data","P2> Valid","P2> XY",
+                "P3> XY","P4> XY","P3> Data","P4> Data",
+                "P4> Valid","P3> Valid",
+                "Router X", "Router Y",
+                "P0< Done", "P1< Done", "P2< Done", "P3< Done", "P4< Done"
+                ]
+output_labels = ["P0> Done", "P1> Done", "P2> Done", "P3> Done", "P4> Done",
+                 "P0< XY","P0< Data","P0< Valid",
+                 "P1< XY","P1< Data","P1< Valid",
+                 "P2< XY","P2< Data","P2< Valid",
+                 "P3< Data","P3< Valid",
+                 "P4< XY","P4< Data","P4< Valid"
+                 ]
+add_components = [com_probe_memory_word: -1]
 
 dialogue = [
   (alien_centered, "For our supercomputer, we want to have mutliple processor cores and other devices in a grid. To communicate between those, we need you to build a Network-On-Chip router."),
