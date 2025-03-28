@@ -2,9 +2,9 @@ kind = sequential
 title = "Structural Hazard"
 size = [-48, -48, 49, 49]
 background = 6
-input_labels = [["Instruction"], ["RAM ready"]]
+input_labels = ["Instruction", "RAM ready"]
 output_labels = ["Execute"]
-save_solution_as_custom = "Symphony/Allegro/hazard/haz_struct"
+copy_solution_to_factory = "Symphony/Allegro/hazard/haz_struct"
 dialogue = [
   (alien, `It is time to remove the Fast RAM component from your circuit, its gate score is just too high.
 

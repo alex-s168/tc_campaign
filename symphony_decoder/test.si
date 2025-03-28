@@ -4,11 +4,10 @@ def get_input($scratch_space: [Int], tick: Int, $inputs: [Int]) {
 
 }
 
-
 def check_output($scratch_space: [Int], tick: Int, inputs: [Int], outputs: [Int]) TestResult {
 
     let instruction     =  inputs[0]
-    let mode            = (instruction >> 30)
+    let mode            = (instruction >> 29) & 0b11 & 0b11
     let opcode          = (instruction >> 24) & 0b1111
     let dest            = (instruction >> 20) & 0b1111
     let a               = (instruction >> 16) & 0b1111
@@ -46,14 +45,14 @@ def check_output($scratch_space: [Int], tick: Int, inputs: [Int], outputs: [Int]
 
     if outputs[3] != a {
 
-        set_error(`Arg 1 should be {a}.`)
+        set_error(`Arg A should be {a}.`)
         return fail
 
     }
 
     if outputs[4] != b {
 
-        set_error(`Arg 2 should be {b}.`)
+        set_error(`Arg B should be {b}.`)
         return fail
 
     }

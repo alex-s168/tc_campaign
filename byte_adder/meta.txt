@@ -10,4 +10,5 @@ dialogue = [
 Finally, there is an input carry as well. This is useful for chaining together byte adders to add larger numbers. You can think of this carry as adding either 0 [OFF] or 1 [ON].
 
 Use [color=#e63e5b][url=byte_adder]this hint[/url][/color] if you get stuck."),
+    (info, `Also, this level has a lot of tests. Right click on the run button to increase the testing speed.`),
 ]

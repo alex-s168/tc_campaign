@@ -1,0 +1,10 @@
+kind = sequential
+title = "Data hazard 2"
+size = [-48, -48, 49, 49]
+background = 6
+copy_solution_to_factory = "Symphony/Allegro/hazard/haz_data"
+input_labels = ["Instruction A", "Instruction B", "Busy reg 1", "Busy reg 2"]
+output_labels = ["Execute B"]
+dialogue = [
+    (alien, ``),
+]

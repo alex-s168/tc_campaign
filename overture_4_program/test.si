@@ -24,19 +24,19 @@ def on_reset($scratch_space: [Int], test: Int) {
 
     var s = <U8> 0
     var d = <U8> 0
-    punch_card_push(MOVE | INPUT | OUTPUT)
-    punch_card_push(MOVE | INPUT | 0)
-    punch_card_push(MOVE | INPUT | 1)
-    punch_card_push(MOVE | INPUT | 2)
-    punch_card_push(MOVE | INPUT | 3)
-    punch_card_push(MOVE | INPUT | 4)
-    punch_card_push(MOVE | INPUT | 5)
+    ram_push(MOVE | INPUT | OUTPUT)
+    ram_push(MOVE | INPUT | 0)
+    ram_push(MOVE | INPUT | 1)
+    ram_push(MOVE | INPUT | 2)
+    ram_push(MOVE | INPUT | 3)
+    ram_push(MOVE | INPUT | 4)
+    ram_push(MOVE | INPUT | 5)
   
     while s <= 6 {
         d = 0
-        punch_card_push(MOVE | INPUT | s)
+        ram_push(MOVE | INPUT | s)
         while d <= 6 {
-            punch_card_push(MOVE | (s << 3) | d)
+            ram_push(MOVE | (s << 3) | d)
             d += 1
         }
         s += 1
@@ -54,8 +54,8 @@ def check_output($scratch_space: [Int], tick: Int, inputs: [Int], outputs: [Int]
         return fail
     }
 
-    if !has_punch_card() {
-        set_error("Add a front panel component.")
+    if !has_ram() {
+        set_error("Add a ram component.")
         return fail
     }
 
@@ -65,6 +65,7 @@ def check_output($scratch_space: [Int], tick: Int, inputs: [Int], outputs: [Int]
     }
 
     let instruction = get_program_output() & 0xff
+    print(instruction)
 
     let opcode = <U8> (instruction >> 6)
 

@@ -1,8 +1,9 @@
 kind = combinational
 title = "Symphony ALU"
 size = [-48, -48, 49, 49]
-save_solution_as_custom = "Symphony/ALU"
-input_labels = [["Operand"], ["Input 1"], ["Input 2"]]
+copy_solution_to_factory = "Symphony/ALU"
+copy_solution_to_level = ["symphony_fast_alu"]
+input_labels = ["Operand", "Input 1", "Input 2"]
 output_labels = ["Output"]
 background = 6
 dialogue = [
@@ -18,7 +19,8 @@ Instructions:
 6 XOR
 7 LSL
 8 LSR
-9 CMP[/color][/code]
+9 CMP
+10 MUL[/color][/code]
 
 The cmp operation is the one you already created a custom component for in the previous level"),
 ]

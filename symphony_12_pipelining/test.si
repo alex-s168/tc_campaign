@@ -48,7 +48,7 @@ def timer(input: Bool, $scratch_space: [Int], index: Int) Bool {
 
 def instruction_to_str(instruction: Int) String {
 
-    let mode            = (instruction >> 30)
+    let mode            = (instruction >> 29) & 0b11
     let opcode          = (instruction >> 24) & 0b1111
     let dest            = (instruction >> 20) & 0b1111
     let a               = (instruction >> 16) & 0b1111
@@ -133,6 +133,7 @@ def instruction_to_str(instruction: Int) String {
                 7 { opcode_str = "lsl" }
                 8 { opcode_str = "lsr" }
                 9 { return `cmp {a_str}, {b_str}` }
+                10 { opcode_str = "mul" }
 
             return `{opcode_str} {dest_str}, {a_str}, {b_str}`
 
@@ -159,16 +160,24 @@ def instruction_to_str(instruction: Int) String {
 
         OP_RAM {
 
-            const LOAD   = 0
-            const STORE  = 1
-            const PLOAD  = 2
-            const PSTORE = 3
+            const LOAD_8    = 0
+            const STORE_8   = 1
+            const LOAD_16   = 2
+            const STORE_16  = 3
+            const PLOAD_8   = 4
+            const PSTORE_8  = 5
+            const PLOAD_16  = 6
+            const PSTORE_16 = 7
 
             switch opcode
-                LOAD   { return `load {dest_str}, [{b_str}]` }
-                STORE  { return `store [{b_str}], {a_str}` }
-                PLOAD  { return `pload {dest_str}, [{b_str}]` }
-                PSTORE { return `pstore [{b_str}], {a_str}` }
+                LOAD_8    { return `load_8 {dest_str}, [{b_str}]` }
+                STORE_8   { return `store_8 [{b_str}], {a_str}` }
+                LOAD_16   { return `load_16 {dest_str}, [{b_str}]` }
+                STORE_16  { return `store_16 [{b_str}], {a_str}` }
+                PLOAD_8   { return `pload_8 {dest_str}, [{b_str}]` }
+                PSTORE_8  { return `pstore_8 [{b_str}], {a_str}` }
+                PLOAD_16  { return `pload_16 {dest_str}, [{b_str}]` }
+                PSTORE_16 { return `pstore_16 [{b_str}], {a_str}` }
 
         }
 
@@ -177,7 +186,7 @@ def instruction_to_str(instruction: Int) String {
 
 def retire_instruction(instruction: Int, $scratch_space: [Int], input: Int) Int {
     
-    let mode            = (instruction >> 30)
+    let mode            = (instruction >> 29) & 0b11
     let opcode          = (instruction >> 24) & 0b1111
     let dest            = (instruction >> 20) & 0b1111
     let a               = (instruction >> 16) & 0b1111
@@ -323,38 +332,69 @@ def retire_instruction(instruction: Int, $scratch_space: [Int], input: Int) Int 
 
         OP_RAM {
 
-            const LOAD   = 0
-            const STORE  = 1
-            const DLOAD  = 2
-            const DSTORE = 3
+            const LOAD_8    = 0
+            const STORE_8   = 1
+            const LOAD_16   = 2
+            const STORE_16  = 3
+            const PLOAD_8   = 4
+            const PSTORE_8  = 5
+            const PLOAD_16  = 6
+            const PSTORE_16 = 7
 
             switch opcode
-                LOAD {
+
+                LOAD_8 {
+
+                    scratch_space[REGS + dest] = scratch_space[RAM + b_value]
+
+                }
+
+                STORE_8 {
+
+                    scratch_space[RAM + b_value + 0] = a_value & 0xff
+
+                }
+
+                LOAD_16 {
 
                     var value = scratch_space[RAM + b_value] << 8 + scratch_space[RAM + b_value + 1]
-
                     scratch_space[REGS + dest] = value
 
                 }
-                STORE {
+
+                STORE_16 {
 
                     scratch_space[RAM + b_value + 1] = a_value & 0xff
                     scratch_space[RAM + b_value + 0] = a_value >> 8
 
                 }
-                DLOAD {
+
+                PLOAD_8 {
+
+                    scratch_space[REGS + dest] = scratch_space[SSD + b_value]
+
+                }
+
+                PSTORE_8 {
+
+                    scratch_space[SSD + b_value + 0] = a_value & 0xff
+
+                }
+
+                PLOAD_16 {
 
                     var value = scratch_space[SSD + b_value] << 8 + scratch_space[SSD + b_value + 1]
-
                     scratch_space[REGS + dest] = value
 
                 }
-                DSTORE {
+
+                PSTORE_16 {
 
                     scratch_space[SSD + b_value + 1] = a_value & 0xff
                     scratch_space[SSD + b_value + 0] = a_value >> 8
 
                 }
+
 
         }
 
@@ -408,13 +448,6 @@ def check_output($scratch_space: [Int], tick: Int, inputs: [Int], outputs: [Int]
     
     }
 
-    if get_ram_count() > 1 {
-
-        set_error(`Use only one RAM component.`)
-        return fail
-
-    }
-
     if get_ram_size() != 65536 {
 
         set_error(`Set RAM size to 65536.`)
@@ -422,16 +455,9 @@ def check_output($scratch_space: [Int], tick: Int, inputs: [Int], outputs: [Int]
 
     }
 
-    if get_ram_width() != 16 {
+    if get_assembler_little_endian() {
 
-        set_error(`Set the primary RAM width to 16.`)
-        return fail
-
-    }
-
-    if get_ram_width_2() != 32 {
-
-        set_error(`Set the secondary RAM width to 32.`)
+        set_error("The assembler should not be set to little endian")
         return fail
 
     }
@@ -449,7 +475,7 @@ def check_output($scratch_space: [Int], tick: Int, inputs: [Int], outputs: [Int]
     scratch_space[IO_2] = scratch_space[IO_1]
     scratch_space[IO_1] = inputs[0]
 
-    let stall = timer(instruction_0 >> 30 == OP_JMP, $scratch_space, STALL_COUNT)
+    let stall = timer(instruction_0 >> 29 == OP_JMP, $scratch_space, STALL_COUNT)
 
 
     if stall {
@@ -484,7 +510,7 @@ def check_output($scratch_space: [Int], tick: Int, inputs: [Int], outputs: [Int]
 
         let instruction = scratch_space[INSTRUCTION_1]
 
-        let mode            = (instruction >> 30)
+        let mode            = (instruction >> 29) & 0b11
         let opcode          = (instruction >> 24) & 0b1111
         let dest            = (instruction >> 20) & 0b1111
         let a               = (instruction >> 16) & 0b1111
@@ -515,7 +541,7 @@ def check_output($scratch_space: [Int], tick: Int, inputs: [Int], outputs: [Int]
     var reg = 1
     while reg < 16 {
 
-        let value = get_register_value(reg - 1)
+        let value = get_register_value(reg)
 
         if value != scratch_space[REGS + reg] {
 
@@ -548,7 +574,7 @@ def check_output($scratch_space: [Int], tick: Int, inputs: [Int], outputs: [Int]
 
         if value != scratch_space[RAM + addr] {
 
-            set_error(`RAM should contain value {scratch_space[RAM + addr]}, at address {addr}, not {val_str(value)}.`)
+            set_error(`Memory should contain value {scratch_space[RAM + addr]}, at address {addr}, not {val_str(value)}.`)
             return fail
 
         }
@@ -562,24 +588,9 @@ def check_output($scratch_space: [Int], tick: Int, inputs: [Int], outputs: [Int]
 
     {
 
-
-
-        if get_ram_count() == 0 {
-
-            set_error(`No RAM component found`)
-            return fail
-
-        }
-
-        if get_ram_count() > 1 {
-
-            set_error(`Use only one RAM component.`)
-            return fail
-
-        }
-
         if get_program_address() != scratch_space[COUNTER_1] {
 
+            ui_set_text("description", "???")
             set_error(`You should read address {scratch_space[COUNTER_1]} from the assembler, not {val_str(get_program_address())}`)
             return fail
 
@@ -599,7 +610,7 @@ def check_output($scratch_space: [Int], tick: Int, inputs: [Int], outputs: [Int]
 
         let instruction = scratch_space[INSTRUCTION_1]
 
-        let mode            = (instruction >> 30)
+        let mode            = (instruction >> 29) & 0b11
         let opcode          = (instruction >> 24) & 0b1111
         let dest            = (instruction >> 20) & 0b1111
         let a               = (instruction >> 16) & 0b1111

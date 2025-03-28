@@ -1,8 +1,8 @@
 kind = combinational
 title = "Instruction Decoder"
 size = [-16, -16, 17, 17]
-save_solution_as_custom = "Overture/Dec"
-input_labels = [["Instruction"]]
+copy_solution_to_factory = "Overture/Dec"
+input_labels = ["Instruction"]
 output_labels = ["Immediate","ALU","Move","Condition"]
 output_history_pins = 1
 background = 6

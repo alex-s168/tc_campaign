@@ -1,0 +1,10 @@
+kind = sequential
+title = "Count leading zeroes"
+size = [-55, -55, 56, 56]
+background = 6
+unlocks_components = [com_clz, com_ctz]
+input_labels = ["Input"]
+output_labels = ["Leading zeroes"]
+dialogue = [
+    (alien, ``),
+]

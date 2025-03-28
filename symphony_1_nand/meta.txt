@@ -5,13 +5,15 @@ size = [-256, -256, 255, 255]
 copy_solution_to_level = ["symphony_2_io"]
 immutable_program = true
 immutable_spec = true
+unlocks_components = [com_store_port]
+add_components = [com_store_port: -1]
 dialogue = [
   (alien_centered, `Finally it is time for you to start building the [color=#e49f44]Symphony[/color] architecture!`),
   (info, `
 Most instructions take 2 arguments and produce 1 result (like ADD, OR etc). 
 
 [color=#e49f44]Symphony[/color] uses 4 bytes per instruction and can encode all three in each instruction. This means we can for example ADD any two registers and store the result in any other register.`),
-  (info, `These are the names of the 8 registers of [color=#e49f44]Symphony[/color]:
+  (info, `These are the names of the 16 registers of [color=#e49f44]Symphony[/color]:
 
 [code]
 0 zr
@@ -32,13 +34,14 @@ Most instructions take 2 arguments and produce 1 result (like ADD, OR etc).
 15 flags
 [/code]
 
-"zr" will always produce 0 when read, so we do not need to attach address 0 to any hardware. "sp" and "flags" are normal registers that just happen to have different names. They will be reserved for special purposes later.
-`),
+"zr" will always produce 0 when read, so any write to "zr" will be discarded, we can use this to simplify our hardware. "sp" and "flags" are normal registers that just happen to have different names. They will be reserved for special purposes later.
+
+Instead of using individual registers, we use a "register file", which is just a RAM component.`),
   (info, `Do the following to complete this level:
     
-[b]1.[/b] Place a RAM and set the output width it to 32 bit. Click on it and set the byte size to 65536.
-[b]2.[/b] Add 7 registers, using the custom component build in an earlier level
-[b]3.[/b] Click "Edit link components" on the program component and connect the 7 registers. (do not connect the zr register)
+[b]1.[/b] Place a RAM for our program and set the output width it to 32 bit. Click on it, enable assembly and set the byte size to 65536.
+[b]2.[/b] Add a RAM component as our register file. Add one write port at the bottom and two read ports on top (order matters as lower ports happen last).
+[b]3.[/b] Click "Edit link components" on the program component and then "Add register file". (do not connect the zr register)
 `),
   (info, `Finally, implement the NAND instruction.
 
@@ -51,7 +54,7 @@ This is how the instructions are encoded:
 [color=#66ccff]B[/color] = Argument B
 [color=#bbbbbb]0[/color] = Unused / zero[/code]
 
-[code][color=#ff9800]MM[/color][color=#bbbbbb]00[/color][color=#ff6680]OOOO[/color] [color=#ffe666]DDDD[/color][color=#66ff99]AAAA[/color] [color=#bbbbbb]0000[/color][color=#66ccff]BBBB[/color] [color=#bbbbbb]00000000[/color][/code]
+[code][color=#bbbbbb]0[/color][color=#ff9800]MM[/color][color=#bbbbbb]0[/color][color=#ff6680]OOOO[/color] [color=#ffe666]DDDD[/color][color=#66ff99]AAAA[/color] [color=#bbbbbb]0000[/color][color=#66ccff]BBBB[/color] [color=#bbbbbb]00000000[/color][/code]
 
 Use the decoder to separate the destination and argument registers. Also, in this level the [color=#ff9800]Mode[/color] is always 3 and the [color=#ff6680]Opcode[/color] is always 0. This means we NAND the first argument with the second and store the result to the result register. 
 
@@ -88,7 +91,7 @@ flags 1111
 [instructions]
 
 nand %a(register), %b(register), %c(register)
-01000000 aaaabbbb 0000cccc 00000000
+00100000 aaaabbbb 0000cccc 00000000
 NAND %b and %c and store the result in %a.
 
 nop

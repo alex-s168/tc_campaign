@@ -1,0 +1,10 @@
+kind = sequential
+title = "Reorder Buffer"
+size = [-55, -55, 56, 56]
+background = 6
+//copy_solution_to_factory = "Symphony/Allegro/out_of_order/reorder"
+//input_labels = ["Load count", "Instruction A", "Instruction B", "Instruction C", "Counter"]
+//output_labels = ["Renamed A", "Renamed B", "Renamed C"]
+dialogue = [
+    (alien, ``),
+]

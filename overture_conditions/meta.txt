@@ -3,7 +3,7 @@ immutable_program = true
 immutable_spec = true
 title = "Conditions"
 size = [-48, -48, 49, 49]
-save_solution_as_custom = "Overture/Cond"
+copy_solution_to_factory = "Overture/Cond"
 background = 6
 dialogue = [
   (info, "This level has a value input and 3 condition bit inputs.

@@ -10,7 +10,7 @@ def flag_result(a: Int, b: Int) Int {
 
 def get_input($scratch_space: [Int], tick: Int, $inputs: [Int]) {
 
-    var code = random(10)
+    var code = random(11)
     var a = random(0x10000)
     var b = 0
 
@@ -89,6 +89,12 @@ def get_input($scratch_space: [Int], tick: Int, $inputs: [Int]) {
             ui_set_text("description", `FLAGS {a}, {b} = {flag_result(a, b)}`) 
 
         }
+        10 { 
+
+            set_custom_input_text(`MUL`)
+            ui_set_text("description", `MUL {a}, {b} = {<U16> (a * b)}`) 
+
+        }
 
 }
 
@@ -107,6 +113,7 @@ def check_output($scratch_space: [Int], tick: Int, inputs: [Int], outputs: [Int]
         7 { result =   inputs[1] << inputs[2] }
         8 { result =   inputs[1] >> inputs[2] }
         9 { result =  flag_result(inputs[1], inputs[2]) }
+        10 { result =   inputs[1] *  inputs[2] }
 
     result &= 0xffff
 
@@ -125,6 +132,7 @@ def check_output($scratch_space: [Int], tick: Int, inputs: [Int], outputs: [Int]
             7 { set_error(`{a} LSL {b} = {(a << b) & 0xffff}`) }
             8 { set_error(`{a} LSR {b} = {a >> b}`) }
             9 { set_error(`FLAGS {a}, {b} = {flag_result(a, b)}`) }
+            10 { set_error(`{a} * {b} = {(a * b) & 0xffff}`) }
 
         return fail
 

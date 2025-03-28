@@ -4,6 +4,6 @@ tests = 64
 size = [-256, -256, 255, 255]
 dialogue = [
   (alien_centered, `We are updating the galactic encyclopedia of food, inserting human foods. As we don't have an alphabet, entries in the encyclopedia are ordered by deliciousness.`),
-  (info_centered, `First read the 15 deliciousness scores from the input one by one. Your task is to output them in sorted order, smallest to largest.`),
+  (info_centered, `First read the 16 deliciousness scores from the input one by one. Your task is to output them in sorted order, smallest to largest.`),
 ]
 

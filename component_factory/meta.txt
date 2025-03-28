@@ -2,7 +2,6 @@ kind = factory
 no_score = true
 title = "Component Factory"
 size = [-128, -128, 129, 129]
-remove_components = [com_file_loader]
 background = 6
 dialogue = [
   (info, "Welcome to the component factory, the circuits you create in here will be usable as components in architectures.

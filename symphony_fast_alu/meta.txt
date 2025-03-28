@@ -1,0 +1,10 @@
+kind = combinational
+title = "Symphony FAST ALU"
+size = [-48, -48, 49, 49]
+copy_solution_to_factory = "Symphony/FAST_ALU"
+input_labels = ["Operand", "Input 1", "Input 2"]
+output_labels = ["Output"]
+background = 6
+dialogue = [
+  (info, "The ALU needs to be fast enough to not be a bottleneck. To do this, delete the MUL instruction (it will be reintroduced later) and make sure delay is less than 60."),
+]

@@ -2,8 +2,8 @@ kind = combinational
 title = "Condition match"
 size = [-48, -48, 49, 49]
 background = 6
-save_solution_as_custom = "Symphony/cond"
-input_labels = [["Flags"], ["Condition"]]
+copy_solution_to_factory = "Symphony/cond"
+input_labels = ["Flags", "Condition"]
 dialogue = [
     (info, `In this level the first input contains flags and the second argument contains a condition. We need to test if the flags match the condition. Only the first three bits of the flag input are used, compare them to the first three bits of the condition input. If any pair are both true, the condition is matched.
 

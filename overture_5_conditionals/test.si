@@ -38,115 +38,115 @@ def on_reset($scratch_space: [Int], test: Int) {
 
     // Test against 0
 
-    punch_card_push(COND | NEVER)
+    ram_push(COND | NEVER)
 
-    punch_card_push(<U8> .program_length + 3)
-    punch_card_push(COND | EQ)
-    punch_card_push(NOOP)
+    ram_push(<U8> .program_length + 3)
+    ram_push(COND | EQ)
+    ram_push(NOOP)
 
-    punch_card_push(COND | LT)
+    ram_push(COND | LT)
 
-    punch_card_push(<U8> .program_length + 3)
-    punch_card_push(COND | LE)
-    punch_card_push(NOOP)
+    ram_push(<U8> .program_length + 3)
+    ram_push(COND | LE)
+    ram_push(NOOP)
 
-    punch_card_push(<U8> .program_length + 3)
-    punch_card_push(COND | ALWAYS)
-    punch_card_push(NOOP)
+    ram_push(<U8> .program_length + 3)
+    ram_push(COND | ALWAYS)
+    ram_push(NOOP)
 
-    punch_card_push(COND | NE)
+    ram_push(COND | NE)
 
-    punch_card_push(<U8> .program_length + 3)
-    punch_card_push(COND | GE)
-    punch_card_push(NOOP)
+    ram_push(<U8> .program_length + 3)
+    ram_push(COND | GE)
+    ram_push(NOOP)
 
-    punch_card_push(COND | GT)
+    ram_push(COND | GT)
 
 
     // Test against 1
 
-    punch_card_push(1)
-    punch_card_push(MOVE | 0 | 3)
+    ram_push(1)
+    ram_push(MOVE | 0 | 3)
 
-    punch_card_push(COND | NEVER)
-    punch_card_push(COND | EQ)
-    punch_card_push(COND | LT)
-    punch_card_push(COND | LE)
+    ram_push(COND | NEVER)
+    ram_push(COND | EQ)
+    ram_push(COND | LT)
+    ram_push(COND | LE)
 
-    punch_card_push(<U8> .program_length + 3)
-    punch_card_push(COND | ALWAYS)
-    punch_card_push(NOOP)
+    ram_push(<U8> .program_length + 3)
+    ram_push(COND | ALWAYS)
+    ram_push(NOOP)
 
-    punch_card_push(<U8> .program_length + 3)
-    punch_card_push(COND | NE)
-    punch_card_push(NOOP)
+    ram_push(<U8> .program_length + 3)
+    ram_push(COND | NE)
+    ram_push(NOOP)
 
-    punch_card_push(<U8> .program_length + 3)
-    punch_card_push(COND | GE)
-    punch_card_push(NOOP)
+    ram_push(<U8> .program_length + 3)
+    ram_push(COND | GE)
+    ram_push(NOOP)
 
-    punch_card_push(<U8> .program_length + 3)
-    punch_card_push(COND | GT)
-    punch_card_push(NOOP)
+    ram_push(<U8> .program_length + 3)
+    ram_push(COND | GT)
+    ram_push(NOOP)
 
 
     // Test against -1
 
-    punch_card_push(MOVE | (<U8> 3 << 3) | 2)
-    punch_card_push(CALC | SUB)
+    ram_push(MOVE | (<U8> 3 << 3) | 2)
+    ram_push(CALC | SUB)
 
-    punch_card_push(COND | NEVER)
-    punch_card_push(COND | EQ)
+    ram_push(COND | NEVER)
+    ram_push(COND | EQ)
 
-    punch_card_push(<U8> .program_length + 3)
-    punch_card_push(COND | LT)
-    punch_card_push(NOOP)
+    ram_push(<U8> .program_length + 3)
+    ram_push(COND | LT)
+    ram_push(NOOP)
 
-    punch_card_push(<U8> .program_length + 3)
-    punch_card_push(COND | LE)
-    punch_card_push(NOOP)
+    ram_push(<U8> .program_length + 3)
+    ram_push(COND | LE)
+    ram_push(NOOP)
 
-    punch_card_push(<U8> .program_length + 3)
-    punch_card_push(COND | ALWAYS)
-    punch_card_push(NOOP)
+    ram_push(<U8> .program_length + 3)
+    ram_push(COND | ALWAYS)
+    ram_push(NOOP)
 
-    punch_card_push(<U8> .program_length + 3)
-    punch_card_push(COND | NE)
-    punch_card_push(NOOP)
+    ram_push(<U8> .program_length + 3)
+    ram_push(COND | NE)
+    ram_push(NOOP)
 
-    punch_card_push(COND | GE)
-    punch_card_push(COND | GT)
+    ram_push(COND | GE)
+    ram_push(COND | GT)
 
     var imm = <U8> 0
     while imm < 64 {
-        punch_card_push(imm)
+        ram_push(imm)
         imm += 1
     }
 
     var alu_opp = <U8> 0
     while alu_opp < 6 {
-        punch_card_push(MOVE | INPUT | 1)
-        punch_card_push(MOVE | INPUT | 2)
-        punch_card_push(CALC | alu_opp)
-        punch_card_push(MOVE | <U8> 3 << 3 | OUTPUT)
+        ram_push(MOVE | INPUT | 1)
+        ram_push(MOVE | INPUT | 2)
+        ram_push(CALC | alu_opp)
+        ram_push(MOVE | <U8> 3 << 3 | OUTPUT)
         alu_opp += 1
     }
 
     var s = <U8> 0
     var d = <U8> 0
-    punch_card_push(MOVE | INPUT | OUTPUT)
-    punch_card_push(MOVE | INPUT | 0)
-    punch_card_push(MOVE | INPUT | 1)
-    punch_card_push(MOVE | INPUT | 2)
-    punch_card_push(MOVE | INPUT | 3)
-    punch_card_push(MOVE | INPUT | 4)
-    punch_card_push(MOVE | INPUT | 5)
+    ram_push(MOVE | INPUT | OUTPUT)
+    ram_push(MOVE | INPUT | 0)
+    ram_push(MOVE | INPUT | 1)
+    ram_push(MOVE | INPUT | 2)
+    ram_push(MOVE | INPUT | 3)
+    ram_push(MOVE | INPUT | 4)
+    ram_push(MOVE | INPUT | 5)
 
     while s <= 6 {
         d = 0
-        punch_card_push(MOVE | INPUT | s)
+        ram_push(MOVE | INPUT | s)
         while d <= 6 {
-            punch_card_push(MOVE | (s << 3) | d)
+            ram_push(MOVE | (s << 3) | d)
             d += 1
         }
         s += 1
@@ -164,8 +164,8 @@ def check_output($scratch_space: [Int], tick: Int, inputs: [Int], outputs: [Int]
         return fail
     }
 
-    if !has_punch_card() {
-        set_error("Add a front panel component.")
+    if !has_ram() {
+        set_error("Add a RAM component.")
         return fail
     }
 

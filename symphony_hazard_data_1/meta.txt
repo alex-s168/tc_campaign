@@ -1,0 +1,24 @@
+kind = sequential
+title = "Data hazard"
+size = [-48, -48, 49, 49]
+background = 6
+copy_solution_to_factory = "Symphony/Allegro/hazard/haz_data"
+input_labels = ["Instruction A", "Instruction B"]
+output_labels = ["Execute B"]
+add_components = [com_probe_memory_word: -1]
+dialogue = [
+    (alien, `The next optimization we are going to implement is making the architecture superscalar.
+
+Superscalarity means we will execute more than one instruction per tick, in this case two. 
+
+However, certain pairs of instructions cannot be executed simultaneously. In this level the input will be a pair of instructions, you should output 1 if they can be executed together.`)
+    (alien, `There are three main situations where we can't execute two instructions together: 
+
+A: The first instruction is a JUMP.
+
+B: When the second instruction uses the destination register of the first instruction. In this case we have to wait for the first instruction before we can load the updated register value.
+
+C: The second pipeline is only allowed to execute ALU instructions. There are many issues with having the second pipeline execute IO, JUMP or RAM instructions. For example, we only have one RAM component, so we can't execute load / stores at different addresses in the same tick. Also, we only have one level input component, two "in" instructions in the same tick would only read from it once.
+
+`),
+]

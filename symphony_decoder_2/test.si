@@ -1,0 +1,80 @@
+def get_input($scratch_space: [Int], tick: Int, $inputs: [Int]) {
+
+    inputs[0] = random(0xffffffff)
+
+}
+
+def check_output($scratch_space: [Int], tick: Int, inputs: [Int], outputs: [Int]) TestResult {
+
+    let instruction     =  inputs[0]
+    let mode            = (instruction >> 29) & 0b11
+    let opcode          = (instruction >> 24) & 0b1111
+    let dest            = (instruction >> 37) << 4 | ((instruction >> 20) & 0b1111)
+    let a               = (instruction >> 34) << 4 | ((instruction >> 16) & 0b1111)
+    let b               = (instruction >> 31) << 4 | ((instruction >>  8) & 0b1111)
+    let immediate       = (instruction >> 28) & 1
+    let immediate_value =  instruction & 0xffff
+
+    if get_gate_score() > 0 || get_delay_score() > 0 {
+
+        set_error(`The solution to this level must not have any gate and delay cost (use static indexers to solve the level).`)
+        return fail
+
+    }
+
+    if outputs[0] != mode {
+
+        set_error(`Mode should be {mode}.`)
+        return fail
+
+    }
+
+    if outputs[1] != opcode {
+
+        set_error(`Opcode should be {opcode}.`)
+        return fail
+
+    }
+
+    if outputs[2] != dest {
+
+        set_error(`Destination should be {dest}.`)
+        return fail
+
+    }
+
+    if outputs[3] != a {
+
+        set_error(`Arg A should be {a}.`)
+        return fail
+
+    }
+
+    if outputs[4] != b {
+
+        set_error(`Arg B should be {b}.`)
+        return fail
+
+    }
+
+    if outputs[5] != immediate {
+
+        set_error(`'Is immediate' should be {immediate}.`)
+        return fail
+
+    }
+
+    if outputs[6] != immediate_value {
+
+        set_error(`Immediate value should be {immediate_value}.`)
+        return fail
+
+    }
+
+    if tick == 0xffff {
+
+        return win
+
+    }
+
+}

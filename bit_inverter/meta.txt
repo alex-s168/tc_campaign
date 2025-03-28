@@ -1,7 +1,8 @@
 kind = sequential
 title = "Bit Inverter"
 size = [-30, -30, 30, 30]
-input_labels = [["0","1","Value"],["No","Yes","Invert"]]
+input_labels = ["Value","Invert"]
+input_values = [("0","1"),("No","Yes")]
 tick_past_fail = 4
 output_history_pins = 1
 background = 2

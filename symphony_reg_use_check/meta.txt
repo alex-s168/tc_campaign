@@ -1,9 +1,10 @@
 kind = combinational
 title = "Reg use check"
 size = [-48, -48, 49, 49]
-save_solution_as_custom = "Symphony/Allegro/reg_use"
-input_labels = [["Instruction", "Register"]]
-output_labels = ["Destination IO", "Argument IO"]
+copy_solution_to_factory = "Symphony/Allegro/reg_use"
+copy_solution_to_level = ["symphony_reg_use_check_2"]
+input_labels = ["Instruction", "Register"]
+output_labels = ["In use"]
 background = 6
 dialogue = [
   (info, `This level gives you an instruction and a register. Output 1 if the instruction depends on the register for argument A or argument B.
@@ -19,7 +20,7 @@ As always, the encoding looks like this:
 [color=#66ccff]B[/color] = Argument B
 [color=#bbbbbb]0[/color] = Unused / zero[/code]
 
-[code][color=#ff9800]MM[/color][color=#bbbbbb]O[/color][color=#9966ff]I[/color][color=#ff6680]OOOO[/color] [color=#ffe666]DDDD[/color][color=#66ff99]AAAA[/color] [color=#bbbbbb]0000[/color][color=#66ccff]BBBB[/color] [color=#bbbbbb]00000000[/color][/code]
+[code][color=#bbbbbb]O[/color][color=#ff9800]MM[/color][color=#9966ff]I[/color][color=#ff6680]OOOO[/color] [color=#ffe666]DDDD[/color][color=#66ff99]AAAA[/color] [color=#bbbbbb]0000[/color][color=#66ccff]BBBB[/color] [color=#bbbbbb]00000000[/color][/code]
 
   `),
 ]

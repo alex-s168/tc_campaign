@@ -1,0 +1,11 @@
+kind = sequential
+title = "Instruction selection"
+copy_solution_to_factory = "Symphony/Allegro/out_of_order/select"
+input_labels = ["Instruction 0", "Instruction 1", "Instruction 2"]
+output_labels = ["Instruction A", "Instruction B", "0 selected", "1 selected", "2 selected"]
+size = [-256, -256, 255, 255]
+background = 6
+dialogue = [(alien_centered, "
+
+"),
+]

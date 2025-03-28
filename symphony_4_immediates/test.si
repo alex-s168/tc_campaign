@@ -7,7 +7,7 @@ const REGS = 0
 
 def instruction_to_str(instruction: Int) String {
 
-    let mode            = (instruction >> 30)
+    let mode            = (instruction >> 29) & 0b11
     let opcode          = (instruction >> 24) & 0b1111
     let dest            = (instruction >> 20) & 0b1111
     let a               = (instruction >> 16) & 0b1111
@@ -92,6 +92,7 @@ def instruction_to_str(instruction: Int) String {
                 7 { opcode_str = "lsl" }
                 8 { opcode_str = "lsr" }
                 9 { return `cmp {a_str}, {b_str}` }
+                10 { opcode_str = "mul" }
 
             return `{opcode_str} {dest_str}, {a_str}, {b_str}`
 
@@ -118,16 +119,24 @@ def instruction_to_str(instruction: Int) String {
 
         OP_RAM {
 
-            const LOAD   = 0
-            const STORE  = 1
-            const PLOAD  = 2
-            const PSTORE = 3
+            const LOAD_8    = 0
+            const STORE_8   = 1
+            const LOAD_16   = 2
+            const STORE_16  = 3
+            const PLOAD_8   = 4
+            const PSTORE_8  = 5
+            const PLOAD_16  = 6
+            const PSTORE_16 = 7
 
             switch opcode
-                LOAD   { return `load {dest_str}, [{b_str}]` }
-                STORE  { return `store [{b_str}], {a_str}` }
-                PLOAD  { return `pload {dest_str}, [{b_str}]` }
-                PSTORE { return `pstore [{b_str}], {a_str}` }
+                LOAD_8    { return `load_8 {dest_str}, [{b_str}]` }
+                STORE_8   { return `store_8 [{b_str}], {a_str}` }
+                LOAD_16   { return `load_16 {dest_str}, [{b_str}]` }
+                STORE_16  { return `store_16 [{b_str}], {a_str}` }
+                PLOAD_8   { return `pload_8 {dest_str}, [{b_str}]` }
+                PSTORE_8  { return `pstore_8 [{b_str}], {a_str}` }
+                PLOAD_16  { return `pload_16 {dest_str}, [{b_str}]` }
+                PSTORE_16 { return `pstore_16 [{b_str}], {a_str}` }
 
         }
 
@@ -136,7 +145,7 @@ def instruction_to_str(instruction: Int) String {
 
 def retire_instruction(instruction: Int, $scratch_space: [Int], input: Int) Int {
     
-    let mode            = (instruction >> 30)
+    let mode            = (instruction >> 29) & 0b11
     let opcode          = (instruction >> 24) & 0b1111
     let dest            = (instruction >> 20) & 0b1111
     let a               = (instruction >> 16) & 0b1111
@@ -239,18 +248,11 @@ def get_input($scratch_space: [Int], tick: Int, $inputs: [Int]) {
 def check_output($scratch_space: [Int], tick: Int, inputs: [Int], outputs: [Int]) TestResult {
 
 
-    if get_assembler_width() == 0 {
-    
-        set_error("Place an assembly component")
+    if get_assembler_little_endian() {
+
+        set_error("The assembler should not be set to little endian")
         return fail
-    
-    }
-    
-    if get_assembler_width() != 32 {
-    
-        set_error("Set the width of the assembly component to 32")
-        return fail
-    
+
     }
     
     if get_assembler_register_count() < 6 {
@@ -281,7 +283,7 @@ def check_output($scratch_space: [Int], tick: Int, inputs: [Int], outputs: [Int]
     var reg = 1
     while reg < 16 {
 
-        let value = get_register_value(reg - 1)
+        let value = get_register_value(reg)
 
         if value != scratch_space[REGS + reg] {
 

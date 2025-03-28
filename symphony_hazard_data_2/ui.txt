@@ -1,0 +1,2 @@
+[text id="description_a" text="Check if we can execute both instructions simultaniously" size=24 y=80]
+[text id="description_b" text="" size=24 y=110]

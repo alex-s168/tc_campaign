@@ -1,0 +1,39 @@
+
+def get_input($scratch_space: [Int], tick: Int, $inputs: [Int]) {
+
+    inputs[0] = tick
+
+}
+
+def check_output($scratch_space: [Int], tick: Int, inputs: [Int], outputs: [Int]) TestResult {
+
+    let count = min(8, clz(inputs[0] << 56))
+    
+    if count != outputs[0] {
+
+        if inputs[0] == Z_STATE {
+
+            set_error(`Output should never be Z state`)
+
+        } elif count == 1 {
+
+            set_error(`There is 1 leading zeroes in {inputs[0]}`)
+
+        } else {
+
+            set_error(`There are {clz(inputs[0] << 56)} leading zeroes in {inputs[0]}`)
+
+        }
+
+        return fail
+
+    }
+
+
+    if tick == 0x100 {
+
+        return win
+
+    }
+
+}

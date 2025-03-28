@@ -1,0 +1,146 @@
+def flag_result(a: Int, b: Int) Int {
+    let equal = <Int> (a == b)
+    let uless = <Int> (<U16> a < <U16> b) & 1
+    let sless = <Int> (<S16> a < <S16> b) & 1
+
+    let result = (sless << 2) | (uless << 1) | equal
+
+    return (sless << 2) | (uless << 1) | equal
+}
+
+def get_input($scratch_space: [Int], tick: Int, $inputs: [Int]) {
+
+    var code = random(10)
+    var a = random(0x10000)
+    var b = 0
+
+    if code == 8 || code == 9 {
+
+        b = random(16)
+
+    } else {
+
+        b = random(0x10000)
+
+    }
+
+    inputs[0] = code
+    inputs[1] = a
+    inputs[2] = b
+
+    switch code
+        0 { 
+
+            ui_set_text("description", `{a} NAND {b} = {<U16> ~(a & b)}`)
+            set_custom_input_text(`NAND`)
+
+        }
+        1 { 
+
+            ui_set_text("description", `{a} OR {b} = {a | b}`) 
+            set_custom_input_text(`OR`)
+
+        }
+        2 { 
+
+            set_custom_input_text(`AND`)
+            ui_set_text("description", `{a} AND {b} = {a & b}`) 
+
+        }
+        3 { 
+
+            set_custom_input_text(`NOR`)
+            ui_set_text("description", `{a} NOR {b} = {<U16> ~(a | b)}`) 
+
+        }
+        4 { 
+
+            set_custom_input_text(`ADD`)
+            ui_set_text("description", `{a} ADD {b} = {<U16> (a + b)}`) 
+
+        }
+        5 { 
+
+            set_custom_input_text(`SUB`)
+            ui_set_text("description", `{a} SUB {b} = {a - b}`) 
+
+        }
+        6 { 
+
+            set_custom_input_text(`XOR`)
+            ui_set_text("description", `{a} XOR {b} = {a ^ b}`) 
+
+        }
+        7 { 
+
+            set_custom_input_text(`SHL`)
+            ui_set_text("description", `{a} SHL {b} = {<U16> (a << b)}`) 
+
+        }
+        8 { 
+
+            set_custom_input_text(`SHR`)
+            ui_set_text("description", `{a} SHR {b} = {a >> b}`) 
+
+        }
+        9 { 
+
+            set_custom_input_text(`FLAGS`)
+            ui_set_text("description", `FLAGS {a}, {b} = {flag_result(a, b)}`) 
+
+        }
+
+}
+
+def check_output($scratch_space: [Int], tick: Int, inputs: [Int], outputs: [Int]) TestResult {
+
+    var result = 0
+
+    switch inputs[0]
+        0 { result = ~(inputs[1] &  inputs[2]) }
+        1 { result =   inputs[1] |  inputs[2] }
+        2 { result =   inputs[1] &  inputs[2] } 
+        3 { result = ~(inputs[1] |  inputs[2]) } 
+        4 { result =   inputs[1] +  inputs[2] } 
+        5 { result =   inputs[1] -  inputs[2] }
+        6 { result =   inputs[1] ^  inputs[2] }
+        7 { result =   inputs[1] << inputs[2] }
+        8 { result =   inputs[1] >> inputs[2] }
+        9 { result =  flag_result(inputs[1], inputs[2]) }
+
+    result &= 0xffff
+
+    if outputs[0] != result {
+        let a = inputs[1]
+        let b = inputs[2]
+
+        switch inputs[0]
+            0 { set_error(`{a} NAND {b} = {~(a & b)}`) }
+            1 { set_error(`{a} OR {b} = {a | b}`) }
+            2 { set_error(`{a} AND {b} = {a & b}`) }
+            3 { set_error(`{a} NOR {b} = {~(a | b)}`) }
+            4 { set_error(`{a} ADD {b} = {(a + b) & 0xffff}`) }
+            5 { set_error(`{a} SUB {b} = {a - b}`) }
+            6 { set_error(`{a} XOR {b} = {a ^ b}`) }
+            7 { set_error(`{a} LSL {b} = {(a << b) & 0xffff}`) }
+            8 { set_error(`{a} LSR {b} = {a >> b}`) }
+            9 { set_error(`FLAGS {a}, {b} = {flag_result(a, b)}`) }
+
+        return fail
+
+    }
+
+    if tick == 0xffff {
+
+        if get_delay_score() >= 60 {
+
+            set_error(`Your delay score should be less than 60`)
+            return fail
+
+        }
+
+        return win
+
+    }
+
+}

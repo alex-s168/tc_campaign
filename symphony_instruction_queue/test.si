@@ -1,0 +1,104 @@
+
+def get_input($scratch_space: [Int], tick: Int, $inputs: [Int]) {
+
+    inputs[0] = random(2)
+    inputs[1] = random(2)
+    inputs[2] = random(2)
+    inputs[3] = random(0xff)
+    inputs[4] = random(0xff)
+    inputs[5] = random(0xff)
+
+}
+
+def check_output($scratch_space: [Int], tick: Int, inputs: [Int], outputs: [Int]) TestResult {
+
+    scratch_space[3] = inputs[3]
+    scratch_space[4] = inputs[4]
+    scratch_space[5] = inputs[5]
+
+    if inputs[2] == 1 {
+
+        var i = 2
+
+        while i < 5 {
+            scratch_space[i] = scratch_space[i + 1]
+            i += 1
+        }
+
+    }
+
+    if inputs[1] == 1 {
+
+        var i = 1
+
+        while i < 5 {
+            scratch_space[i] = scratch_space[i + 1]
+            i += 1
+        }
+
+    }
+
+    if inputs[0] == 1 {
+
+        var i = 0
+
+
+        while i < 5 {
+            scratch_space[i] = scratch_space[i + 1]
+            i += 1
+        }
+
+    }
+
+
+    if scratch_space[0] != get_level_memory("INSTR 0") {
+
+        set_error(`"INSTR 0" should have been {scratch_space[0]}`)
+        return fail
+
+    }
+
+    if scratch_space[1] != get_level_memory("INSTR 1") {
+
+        set_error(`"INSTR 1" should have been {scratch_space[1]}`)
+        return fail
+
+    }
+
+
+    if scratch_space[2] != get_level_memory("INSTR 2") {
+
+        set_error(`"INSTR 2" should have been {scratch_space[2]}`)
+        return fail
+
+    }
+
+    if scratch_space[0] != outputs[0] {
+
+        set_error(`Output 0 should have been {scratch_space[0]}`)
+        return fail
+
+    }
+
+    if scratch_space[1] != outputs[1] {
+
+        set_error(`Output 1 should have been {scratch_space[1]}`)
+        return fail
+
+    }
+
+    if scratch_space[2] != outputs[2] {
+
+        set_error(`Output 2 should have been {scratch_space[2]}`)
+        return fail
+
+    }
+
+    if tick >= 0xfff {
+
+        return win
+
+    }
+
+}
+

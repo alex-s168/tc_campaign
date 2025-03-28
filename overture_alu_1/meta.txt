@@ -3,7 +3,7 @@ title = "Arithmetic Logic Unit (ALU) 1"
 size = [-48, -48, 49, 49]
 unlocks_components = [com_or_word, com_and_word, com_nor_word]
 copy_solution_to_level = ["alu_2"]
-input_labels = [["CODE"], ["INPUT 1"], ["INPUT 2"]]
+input_labels = ["CODE", "INPUT 1", "INPUT 2"]
 background = 6
 dialogue = [
 (info, "Create a device that can OR, NAND, NOR or AND two byte inputs. The third input will be the [INSTRUCTION]. An [INSTRUCTION] is just what we call the number that determines what to compute.

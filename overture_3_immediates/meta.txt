@@ -5,7 +5,6 @@ no_score = true
 title = "Immediate Values"
 size = [-43, -45, 43, 45]
 copy_solution_to_level = ["overture_4_program"]
-unlocks_components = [com_punch_card]
 dialogue = [
   (info, "We need a way to directly move numbers from our program into registers. For this we use the immediate mode (when the two highest bits are [OFF][OFF]).
 

@@ -1,9 +1,9 @@
 kind = combinational
 title = "Comparison flags"
 size = [-48, -48, 49, 49]
-save_solution_as_custom = "Symphony/cmp"
+copy_solution_to_factory = "Symphony/cmp"
 output_labels = ["Output"]
-input_labels = [["Input 1"], ["Input 2"]]
+input_labels = ["Input 1", "Input 2"]
 background = 6
 dialogue = [
   (info, `In this level you compare two 16 bit inputs in three different ways. Each result is a 1 bit value called a "flag".

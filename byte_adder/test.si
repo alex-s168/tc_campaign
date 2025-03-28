@@ -24,7 +24,7 @@ def check_output($scratch_space: [Int], tick: Int, inputs: [Int], outputs: [Int]
       
     } else {
 
-        //return fail
+        return fail
 
     }
 }
