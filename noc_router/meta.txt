@@ -18,6 +18,7 @@ output_labels = ["P0> Done", "P1> Done", "P2> Done", "P3> Done", "P4> Done",
                  "P4< XY","P4< Data","P4< Valid"
                  ]
 add_components = [com_probe_memory_word: -1]
+background = 6
 
 dialogue = [
   (alien_centered, "For our supercomputer, we want to have mutliple processor cores and other devices in a grid. To communicate between those, we need you to build a Network-On-Chip router."),
@@ -35,4 +36,6 @@ Valid/Done interface:
  when done is true, the next packet can be put onto the valid / done interface.
 `),
  (info, `Hint:
+A simple way of implementing this is by having queues infront of each output`)
+ (info, `Score hint:
 Most packets have to get routed in the same direction where they came from. Direction changes are more rare.`)]

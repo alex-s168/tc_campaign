@@ -1,0 +1,46 @@
+kind = sequential
+title = "NoC Ports Receiver"
+size = [-256, -256, 255, 255]
+copy_solution_to_factory = "NoC/PortsReceiver"
+input_labels = ["NoC Data","NoC Valid",
+                "P0 Done",
+                "P1 Done",
+                "P2 Done",
+                "P3 Done",
+                "P4 Done",
+                "P5 Done",
+                "P6 Done",
+                "P7 Done"]
+output_labels = ["NoC Ready",
+                 "P0 Valid",
+                 "P1 Valid",
+                 "P2 Valid",
+                 "P3 Valid",
+                 "P4 Valid",
+                 "P5 Valid",
+                 "P6 Valid",
+                 "P7 Valid",
+                 "P0 Data",
+                 "P2 Data",
+                 "P3 Data",
+                 "P4 Data",
+                 "P5 Data",
+                 "P6 Data",
+                 "P7 Data",
+                 "P1 Data"]
+add_components = [com_probe_memory_word: -1]
+background = 6
+
+dialogue = [
+  (info, `The least-significant 8 bits in the 64-bit data of NoC packets are the flags.
+The least-significant 4 bits of that byte is the ID of the receiver port of the receiver NoC device.
+There are 8 receiver ports per NoC device.
+
+Make a circuit that:
+  - repeat:
+    - consume NoC packet
+    - wait for latch of receiver port to become available
+    - write NoC packet data (without lowest 8 bits) into that latch
+
+Each latch has a Valid/Done interface
+`)]
