@@ -1,0 +1,11 @@
+kind = sequential
+title = "Sign Extension"
+size = [-32, -32, 32, 32]
+input_labels = ["Value"]
+output_labels = ["Sign Extended"]
+add_components = [com_splitter_bit_8: 1, com_maker_bit_8: 2, com_maker_word_2: 1]
+
+dialogue = [
+  (info, `Sign extend a 5-bit 2s complement number to 16 bit.
+The output value should be the same as the input value in 2s complement.
+`)]

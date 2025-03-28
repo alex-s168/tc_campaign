@@ -1,0 +1,36 @@
+kind = sequential
+title = "ETC.A Decoder"
+size = [-64, -64, 64, 64]
+copy_solution_to_factory = "ETCA/Decoder"
+input_labels = ["Instruction"]
+output_labels = ["Operation Size",
+                 "OpCode / Jump Condition",
+                 "Destination Register",
+                 "Source Register",
+                 "Memory Addressing Mode",
+                 "Is Immediate",
+                 "Immediate Value",
+                 "Jump Displacement",
+                 "Is Jump"]
+background = 6
+components_available = [com_static_indexer: 10, com_concatenator_2: 1]
+
+dialogue = [
+  (info, `Make a decoder for the base ETC.A instruction set:
+
+[code]
+00 [color=#ff6680]SS[/color] [color=#9966ff]CCCC[/color]  [color=#ffe666]OOO[/color][color=#66ff99]RRR[/color][color=#66ccff]MM[/color]	2 reg ALU Op
+01 [color=#ff6680]SS[/color] [color=#9966ff]CCCC[/color]  [color=#ffe666]OOO[/color][color=#bbbbbb]IIIII[/color]	Imm and 1 reg ALU Op
+10 0[color=#ff9800]D[/color] [color=#9966ff]CCCC[/color]  [color=#ff9800]DDDDDDDD[/color]	jump Op
+[/code]
+
+[code]
+[color=#ff6680]SS[/color]    Operation Size
+[color=#9966ff]CCCC[/color]  OpCode / Jump Condition
+[color=#ffe666]OOO[/color]   Destination Register
+[color=#66ff99]RRR[/color]   Source Register
+[color=#66ccff]MM[/color]    Memory Addressing Mode
+[color=#bbbbbb]IIIII[/color] Immediate Value
+[color=#ff9800]D_DDDDDDDD[/color]  Jump Displacement
+[/code]
+`)]

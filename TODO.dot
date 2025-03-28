@@ -1,0 +1,56 @@
+digraph G {
+    // from the main game campaign
+    Overture [color="green"]
+    Divider [color="green"]
+    Multiplier [color="green"]
+    Unsigned_Less [color="green"]
+
+    Overture -> ALU, Decoder
+    Decoder -> Sign_Ext
+    ALU, Sign_Ext -> Wiring_Spagethi -> Cond -> Jumps
+    
+    Jumps -> Interrupts, Variable_Instruction_Len, Functions, b8_alu, b32_alu
+    Jumps -> Memory_Mapped_IO
+
+    Variable_Instruction_Len -> MO1, MO2, Register_Expansion
+
+    Functions -> Arbitary_Stack_Ptr
+
+    b8_alu -> Half_Word_Store
+    b32_alu -> Store_Twice
+
+    Half_Word_Store, Store_Twice -> Unaligned_Store
+    
+    Variable_Instruction_Len -> Full_Immediate, CC_Prefix, Expanded_Opcodes
+    
+    Multiplier, Expanded_Opcodes, Divider -> Mul_Div
+
+    Expanded_Opcodes -> BMI1
+
+    Interrupts -> Priviligd_Mode
+
+    Full_Immediate, CC_Prefix, Memory_Mapped_IO, Arbitary_Stack_Ptr -> V1
+    V1 -> Cache_CTL -> High_Perf_Core
+    V1 -> VirtualMem -> TLB -> High_Perf_Core
+    Priviligd_Mode, MO1, MO2, Register_Expansion, V1, BMI1, Mul_Div, Unaligned_Store -> High_Perf_Core
+
+    Unaligned_Store -> Wide_Memory
+
+    V1 -> Async_Mem_Ext
+
+    Unsigned_Less -> NoC_Router -> NoC_Receive_Port, Async_NoC_Receiver, NoC_Memory_Controller
+    NoC_Receive_Port, V1 -> NoC_Extension
+    V1 -> Fake_Multicore -> Local_Mem
+    NoC_Extension, Async_NoC_Receiver, Local_Mem -> Async_NoC_Extension
+
+    NoC_Router -> NoC_As_Mem
+    NoC_Extension, Local_Mem, NoC_As_Mem, NoC_Memory_Controller -> Multi_Core_Via_Noc
+    
+    NoC_Router -> NoC_IO_Device
+    Multi_Core_Via_Noc, NoC_IO_Device -> NoC_IO_Device_Ext
+
+    NoC_IO_Device_Ext, High_Perf_Core -> High_Perf_CPU_Via_NoC
+
+    High_Perf_Core -> Multi_Core_Via_Bus -> Cache_Hierachy -> High_Perf_CPU_Via_Bus
+    Fake_Multicore -> Multi_Core_Via_Bus
+}

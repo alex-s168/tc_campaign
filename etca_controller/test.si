@@ -1,0 +1,107 @@
+def get_input($scratch_space: [Int], tick: Int, $inputs: [Int]) {
+
+    inputs[0] = random(0xf)
+
+}
+
+def check_output($scratch_space: [Int], tick: Int, inputs: [Int], outputs: [Int]) TestResult {
+
+    let opcode = inputs[0]
+    let is_jmp = inputs[1]
+
+    var sign_ext_imm = ~((opcode >> 3) & 0b1)
+    if opcode == 0b1001 {
+        sign_ext_imm = 0b1
+    }
+
+    var write_res = 1
+    if (opcode & 0b11) == 0b11 {
+        write_res = 0
+    }
+
+    var load = 0
+    if opcode == 0b1010 {
+        load = 1
+    }
+
+    var store = 0
+    if opcode == 0b1011 {
+        store = 1
+    }
+
+    var readcr = 0
+    if opcode == 0b1110 {
+        readcr = 1
+    }
+
+    var writecr = 0
+    if opcode == 0b1111 {
+        writecr = 1
+    }
+
+    if is_jmp == 1 {
+        writecr = 0
+        store = 0
+        write_res = 0
+    }
+
+    var is_alu = 0
+    if (opcode >> 3) == 0 {
+        is_alu = 1
+    }
+    if opcode == 0b1000 || opcode == 0b1001 || opcode == 0b1100 {
+        is_alu = 1
+    }
+
+    let actual_load = outputs[0]
+    let actual_store = outputs[1]
+    let actual_readcr = outputs[2]
+    let actual_writecr = outputs[3]
+    let actual_sext = outputs[4]
+    let actual_wb = outputs[5]
+    let actual_alu = outputs[6]
+
+    if opcode != 0b1101 {
+        if actual_store != store {
+            set_error(`'Store' should be {store}.`)
+            return fail
+        }
+
+        if actual_writecr != writecr {
+            set_error(`'Write CR' should be {writecr}.`)
+            return fail
+        }
+
+        if actual_wb != write_res {
+            set_error(`'Write' should be {write_res}.`)
+            return fail
+        }
+
+        if is_jmp == 0 {
+            if actual_load != load {
+                set_error(`'Load' should be {load}.`)
+                return fail
+            }
+
+            if actual_readcr != readcr {
+                set_error(`'Read CR' should be {readcr}.`)
+                return fail
+            }
+
+            if actual_sext != sign_ext_imm {
+                set_error(`'Sign Extend Immediate' should be {sign_ext_imm}.`)
+                return fail
+            }
+        
+            if actual_alu != is_alu {
+                set_error(`'Is ALU' should be {is_alu}.`)
+                return fail
+            }
+        }
+    }
+
+    if tick == 0xffff {
+        return win
+    }
+
+}

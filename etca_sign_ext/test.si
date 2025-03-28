@@ -1,0 +1,30 @@
+def get_input($scratch_space: [Int], tick: Int, $inputs: [Int]) {
+
+    inputs[0] = random(31)
+
+}
+
+def check_output($scratch_space: [Int], tick: Int, inputs: [Int], outputs: [Int]) TestResult {
+
+    let inp = inputs[0] & 0b11111
+    let sign = (inp >> 4) & 0b1
+    var o = inp
+    if sign == 1 {
+        o = o | 0b11111111_11100000
+    }
+
+    if outputs[0] != o {
+        set_error(`Expected {o}.`)
+        return fail
+    }
+
+    if get_gate_score() > 0 {
+        set_error(`Your solution works, but we want you to implement this with zero delay.`)
+        return fail
+    }
+
+    if tick == 0xfff {
+        return win
+    }
+
+}

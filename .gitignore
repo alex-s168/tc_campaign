@@ -1,2 +1,7 @@
 *.import
 .DS_Store
+
+main
+
+# ignore community campaigns
+gpu_*
