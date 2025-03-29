@@ -38,7 +38,7 @@ digraph G {
 
     V1 -> Async_Mem_Ext
 
-    Unsigned_Less -> NoC_Router -> NoC_Receive_Port, Async_NoC_Receiver, NoC_Memory_Controller
+    Unsigned_Less -> Hardware Queue -> NoC_Router -> NoC_Receive_Port, Async_NoC_Receiver, NoC_Memory_Controller
     NoC_Receive_Port, V1 -> NoC_Extension
     V1 -> Fake_Multicore -> Local_Mem
     NoC_Extension, Async_NoC_Receiver, Local_Mem -> Async_NoC_Extension

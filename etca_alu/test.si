@@ -6,9 +6,9 @@ def get_input($scratch_space: [Int], tick: Int, $inputs: [Int]) {
 
 def check_output($scratch_space: [Int], tick: Int, inputs: [Int], outputs: [Int]) TestResult {
 
-    let opcode = inputs[0]
-    let a = inputs[1]
-    let b = inputs[2]
+    let opcode = inputs[0] & 0xf
+    let a = inputs[1] & 0xffff
+    let b = inputs[2] & 0xffff
 
     var adder_a = a
     var adder_b = b
@@ -22,9 +22,9 @@ def check_output($scratch_space: [Int], tick: Int, inputs: [Int], outputs: [Int]
         adder_a = (~a) & 0xFFFF
     }
 
-    var adder_out = adder_a + adder_b + adder_carr
-    let f_c = (adder_out >> 16) & 0b1
-    adder_out = adder_out & 0xFFFF
+    let full_adder_out  = adder_a + adder_b + adder_carr
+    let adder_out = full_adder_out & 0xFFFF
+    let f_c = (full_adder_out != adder_out) ? 1 : 0
 
     var out = 0
     var test_zn = 0
