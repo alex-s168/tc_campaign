@@ -1,0 +1,138 @@
+def get_input($scratch_space: [Int], tick: Int, $inputs: [Int]) {
+    inputs[0] = random(0xf)
+    inputs[1] = random(0xffff)
+    inputs[2] = random(0xffff)
+}
+
+def check_output($scratch_space: [Int], tick: Int, inputs: [Int], outputs: [Int]) TestResult {
+
+    let opcode = inputs[0]
+    let a = inputs[1]
+    let b = inputs[2]
+
+    var adder_a = a
+    var adder_b = b
+    var adder_carr = 0
+    if opcode ==  0b0001 || opcode == 0b0011 {
+        adder_carr = 1
+        adder_b = (~b) & 0xFFFF
+    }
+    if opcode == 0b0010 {
+        adder_carr = 1
+        adder_a = (~a) & 0xFFFF
+    }
+
+    var adder_out = adder_a + adder_b + adder_carr
+    let f_c = (adder_out >> 16) & 0b1
+    adder_out = adder_out & 0xFFFF
+
+    var out = 0
+    var test_zn = 0
+    var test_cv = 0
+    var any_cv = false
+    var any = true
+    if (opcode >> 2) == 0b00 {
+        any = false
+        out = adder_out
+        test_zn = 1
+        test_cv = 1
+    }
+    if opcode == 0b0100 {
+        any = false
+        any_cv = true
+        test_zn = 1
+        out = a | b
+    }
+    if opcode == 0b0101 {
+        any = false
+        any_cv = true
+        test_zn = 1
+        out = a ^ b
+    }
+    if opcode == 0b0110 {
+        any = false
+        any_cv = true
+        test_zn = 1
+        out = a & b
+    }
+    if opcode == 0b0111 {
+        any = false
+        any_cv = true
+        test_zn = 1
+        out = a & b
+    }
+    if opcode == 0b1000 {
+        any = false
+        out = b
+    }
+    if opcode == 0b1001 {
+        any = false
+        out = b
+    }
+    if opcode == 0b1100 {
+        any = false
+        out = (a << 5) | b
+    }
+
+    out = out & 0xFFFF
+
+    let f_z = (out == 0) ? 1 : 0
+    let f_n = (out >> 15) & 0b1
+    let f_v = (((adder_a >> 15) & 0b1 == (adder_b >> 15) & 0b1) && ((adder_a >> 15) & 0b1) != (adder_out >> 15) & 0b1) ? 1 : 0
+
+    if !any {
+        let actual_out = outputs[0]
+        let actual_zero = outputs[1]
+        let actual_neg = outputs[2]
+        let actual_carr = outputs[3]
+        let actuall_overf = outputs[4]
+        let actual_zn = outputs[5]
+        let actual_cv = outputs[6]
+
+        if actual_out != out {
+            set_error(`Wrong 'Result'. Expected: {out}.`)
+            return fail
+        }
+
+        if test_zn != actual_zn {
+            set_error(`Wrong 'Write ZN'. Expected: {test_zn}`)
+            return fail
+        }
+
+        if test_zn == 1 {
+            if actual_zero != f_z {
+                set_error(`Wrong 'Zero'. Expected: {f_z}`)
+                return fail
+            }
+
+            if actual_neg != f_n {
+                set_error(`Wrong 'Negative'. Expected: {f_n}`)
+                return fail
+            }
+        }
+
+        if !any_cv {
+            if test_cv != actual_cv {
+                set_error(`Wrong 'Write CV'. Expected: {test_cv}`)
+                return fail
+            }
+
+            if test_cv == 1 {
+                if actual_carr != f_c {
+                    set_error(`Wrong 'Carry'. Expected: {f_c}`)
+                    return fail
+                }
+
+                if actuall_overf != f_v {
+                    set_error(`Wrong 'Overflow'. Expected: {f_v}`)
+                    return fail
+                }
+            }
+        }
+    }
+
+    if tick == 0xfffff {
+        return win
+    }
+
+}
