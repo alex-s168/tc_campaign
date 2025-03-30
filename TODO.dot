@@ -5,9 +5,9 @@ digraph G {
     Unsigned_Less [color="green"]
 
     Decoder -> Controller -> Sign_Ext
-    ALU, Sign_Ext, Counter -> Wiring_Spagethi -> Flag Register -> ETCA_Address_Decoder -> ETCA_RAM -> Condition_Check -> Jumps -> MMIO -> New_Counter
-    First_Tick -> New_Counter
-    New_Counter -> Von_Neumann -> Combine_Ram1_and_Ram2 -> Latency_Ram
+    ALU, Sign_Ext, Counter -> Wiring_Spagethi -> Flag_Register -> ETCA_Address_Decoder -> ETCA_RAM -> Condition_Check -> Jumps -> MMIO
+    First_Tick, Counter -> New_Counter
+    New_Counter -> Von_Neumann -> Control_Registers -> Combine_Ram1_and_Ram2 -> Latency_Ram
 
     Latency_Ram -> Interrupts, Variable_Instruction_Len, Functions, b8_alu, b32_alu, Instruction_Cache
 
@@ -38,7 +38,7 @@ digraph G {
 
     V1 -> Async_Mem_Ext
 
-    Unsigned_Less -> Hardware Queue -> NoC_Router -> NoC_Receive_Port, Async_NoC_Receiver, NoC_Memory_Controller
+    Unsigned_Less -> Hardware_Queue -> NoC_Router -> NoC_Receive_Port, Async_NoC_Receiver, NoC_Memory_Controller
     NoC_Receive_Port, V1 -> NoC_Extension
     V1 -> Fake_Multicore -> Local_Mem
     NoC_Extension, Async_NoC_Receiver, Local_Mem -> Async_NoC_Extension
