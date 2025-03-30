@@ -1,13 +1,13 @@
 digraph G {
     // from the main game campaign
-    Overture [color="green"]
     Divider [color="green"]
     Multiplier [color="green"]
     Unsigned_Less [color="green"]
 
-    Overture -> ALU, Decoder
-    Decoder -> Sign_Ext
-    ALU, Sign_Ext -> Wiring_Spagethi -> Flag Register -> ETCA_Address_Decoder -> ETCA_RAM -> Jumps -> Memory_Mapped_IO -> Von_Neumann -> Combine_Ram1_and_Ram2 -> Latency_Ram
+    Decoder -> Controller -> Sign_Ext
+    ALU, Sign_Ext, Counter -> Wiring_Spagethi -> Flag Register -> ETCA_Address_Decoder -> ETCA_RAM -> Jumps -> MMIO -> New_Counter
+    First_Tick -> New_Counter
+    New_Counter -> Von_Neumann -> Combine_Ram1_and_Ram2 -> Latency_Ram
 
     Latency_Ram -> Interrupts, Variable_Instruction_Len, Functions, b8_alu, b32_alu, Instruction_Cache
 

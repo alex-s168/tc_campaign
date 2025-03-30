@@ -25,4 +25,6 @@ If the controller outputs write result, write the result of the ALU into the reg
 Also connect the register file to the program component.
 
 Make sure that the program component is at least 4096 bytes.
+
+Don't forget about immediates. If the controller outputs 'sign extend immediate', you have to sign extend the 5-bit immediate to 16 bits.
 `)]

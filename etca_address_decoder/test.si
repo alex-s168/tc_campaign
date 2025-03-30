@@ -14,7 +14,7 @@ def check_output($scratch_space: [Int], tick: Int, inputs: [Int], outputs: [Int]
     }
 
     var is_ram1 = 0
-    if (is_io == 0) && (addr < 0xffff) {
+    if (is_io == 0) && (addr < 0x8000) {
         is_ram1 = 1
     }
 
