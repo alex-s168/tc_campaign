@@ -1,0 +1,47 @@
+name: Zip and Publish Package
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Create zip archive
+        run: |
+          zip -r package.zip $(find . -maxdepth 1 -type d  -name "etca_*" -o -name "noc_*"  )
+
+      - name: Create a new package version
+        uses: actions/upload-artifact@v3
+        with:
+          name: package
+          path: package.zip
+
+      - name: Create a GitHub Release
+        uses: svenstaro/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_NAME: ${{ github.event.repository.name }}-v${{ github.sha }}
+          RELEASE_TAG: v${{ github.sha }}
+          DRAFT: false
+          PRERELEASE: false
+        with:
+          assets: package.zip
+
+      - name: Upload package to GitHub Packages
+        uses: actions/upload-artifact@v3
+        with:
+          name: package
+          path: package.zip
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish package
+        uses: actions/publish-npm@v1
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
