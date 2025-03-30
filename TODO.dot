@@ -7,10 +7,9 @@ digraph G {
 
     Overture -> ALU, Decoder
     Decoder -> Sign_Ext
-    ALU, Sign_Ext -> Wiring_Spagethi -> Cond -> Jumps
-    
-    Jumps -> Interrupts, Variable_Instruction_Len, Functions, b8_alu, b32_alu
-    Jumps -> Memory_Mapped_IO
+    ALU, Sign_Ext -> Wiring_Spagethi -> Flag Register -> ETCA_Address_Decoder -> ETCA_RAM -> Jumps -> Memory_Mapped_IO -> Von_Neumann -> Combine_Ram1_and_Ram2 -> Latency_Ram
+
+    Latency_Ram -> Interrupts, Variable_Instruction_Len, Functions, b8_alu, b32_alu, Instruction_Cache
 
     Variable_Instruction_Len -> MO1, MO2, Register_Expansion
 
@@ -20,7 +19,7 @@ digraph G {
     b32_alu -> Store_Twice
 
     Half_Word_Store, Store_Twice -> Unaligned_Store
-    
+
     Variable_Instruction_Len -> Full_Immediate, CC_Prefix, Expanded_Opcodes
     
     Multiplier, Expanded_Opcodes, Divider -> Mul_Div
@@ -29,8 +28,9 @@ digraph G {
 
     Interrupts -> Priviligd_Mode
 
-    Full_Immediate, CC_Prefix, Memory_Mapped_IO, Arbitary_Stack_Ptr -> V1
-    V1 -> Cache_CTL -> High_Perf_Core
+    Instruction_Cache -> Cache_Control
+    Full_Immediate, CC_Prefix, Memory_Mapped_IO, Arbitary_Stack_Ptr, Cache_Control -> V1
+    V1 -> Data_Cache -> High_Perf_Core
     V1 -> VirtualMem -> TLB -> High_Perf_Core
     Priviligd_Mode, MO1, MO2, Register_Expansion, V1, BMI1, Mul_Div, Unaligned_Store -> High_Perf_Core
 

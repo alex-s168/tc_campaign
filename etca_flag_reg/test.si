@@ -1,0 +1,18 @@
+def get_input($scratch_space: [Int], tick: Int, $inputs: [Int]) {
+
+}
+
+def check_output($scratch_space: [Int], tick: Int, inputs: [Int], outputs: [Int]) TestResult {
+    let user_z = get_register_value(0)
+    let user_n = get_register_value(1)
+    let user_c = get_register_value(2)
+    let user_v = get_register_value(3)
+
+    return win
+}
+
+
+
+
+
+

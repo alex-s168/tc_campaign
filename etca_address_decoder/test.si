@@ -1,0 +1,61 @@
+def get_input($scratch_space: [Int], tick: Int, $inputs: [Int]) {
+
+    inputs[0] = random(0xffff)
+
+}
+
+def check_output($scratch_space: [Int], tick: Int, inputs: [Int], outputs: [Int]) TestResult {
+
+    let addr = inputs[0]
+
+    var is_io = 0
+    if addr < 32 {
+        is_io = 1
+    }
+
+    var is_ram1 = 0
+    if (is_io == 0) && (addr < 0xffff) {
+        is_ram1 = 1
+    }
+
+    var is_prog = 0
+    if (addr >= 0x8000) && (addr < 0xC000) {
+        is_prog = 1
+    }
+
+    var is_ram2 = 0
+    if addr >= 0xC000 {
+        is_ram2 = 1
+    }
+
+
+    let user_io = outputs[0]
+    let user_ram1 = outputs[1]
+    let user_prog = outputs[2]
+    let user_ram2 = outputs[3]
+
+    if user_io != is_io {
+        set_error(`'is I/O' should be {is_io}.`)
+        return fail
+    }
+
+    if user_ram1 != is_ram1 {
+        set_error(`'is RAM1' should be {is_ram1}.`)
+        return fail
+    }
+
+    if user_prog != is_prog {
+        set_error(`'is Program' should be {is_prog}.`)
+        return fail
+    }
+
+    if user_ram2 != is_ram2 {
+        set_error(`'is RAM2' should be {is_ram2}.`)
+        return fail
+    }
+
+    if tick == 0xffff {
+        return win
+    }
+
+}
