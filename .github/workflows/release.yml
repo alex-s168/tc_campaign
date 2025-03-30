@@ -1,7 +1,9 @@
 name: Zip and Publish
 
 on:
-  push
+  push:
+    branches:
+      - main
 
 jobs:
   zip-and-publish:
@@ -11,25 +13,24 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Zip matching directories
-        run: |
-          for dir in etca_* noc_*; do
-            if [ -d "$dir" ]; then
-              zip -r "${dir}.zip" "$dir"
-            fi
-          done
+      - name: Generate commit hash
+        run: echo "TAG_NAME=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
-      - name: Upload zipped directories
+      - name: Zip all matching directories together
+        run: |
+          zip -r all_directories.zip etca_* noc_* 2>/dev/null || echo "No matching directories found."
+
+      - name: Upload zipped archive
         uses: actions/upload-artifact@v4
         with:
           name: zipped-directories
-          path: "*.zip"
+          path: "all_directories.zip"
           retention-days: 7
 
       - name: Publish to GitHub Releases
         uses: softprops/action-gh-release@v2
         with:
-          files: "*.zip"
-          tag_name: latest
+          files: "all_directories.zip"
+          tag_name: ${{ env.TAG_NAME }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
