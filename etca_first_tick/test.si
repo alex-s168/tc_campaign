@@ -1,0 +1,20 @@
+
+def get_input($scratch_space: [Int], tick: Int, $inputs: [Int]) {
+
+}
+
+def check_output($scratch_space: [Int], tick: Int, inputs: [Int], outputs: [Int]) TestResult {
+
+    let exp = (tick == 0) ? 1 : 0
+
+    if outputs[0] != exp {
+        set_error(`Expected {exp}.`)
+        return fail
+    }
+
+    // making sure that the user didn't use a 16 bit counter that overflows
+    if tick == 0x10000 {
+        return win
+    }
+
+}

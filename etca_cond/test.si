@@ -1,0 +1,61 @@
+def get_input($scratch_space: [Int], tick: Int, $inputs: [Int]) {
+
+    inputs[0] = random(0xf)
+    inputs[1] = random(1)
+    inputs[2] = random(1)
+    inputs[3] = random(1)
+    inputs[4] = random(1)
+
+}
+
+def check_output($scratch_space: [Int], tick: Int, inputs: [Int], outputs: [Int]) TestResult {
+
+    let cccc = inputs[0]
+    let ch = cccc >> 1
+    let negate = (cccc & 1) == 1
+
+    let z = inputs[1]
+    let n = inputs[2]
+    let c = inputs[3]
+    let v = inputs[4]
+
+    var ex = false
+    if ch == 0b000 {
+        ex = z == 1
+    }
+    if ch == 0b001 {
+        ex = n == 1
+    }
+    if ch == 0b010 {
+        ex = c == 1
+    }
+    if ch == 0b011 {
+        ex = v == 1
+    }
+    if ch == 0b100 {
+        ex = (c | z) == 1
+    }
+    if ch == 0b101 {
+        ex = (n == 1) != (v == 1)
+    }
+    if ch == 0b110 {
+        ex = (z == 1) || ((n == 1) != (v == 1))
+    }
+    if ch == 0b111 {
+        ex = true
+    }
+
+    if negate {
+        ex = !ex
+    }
+
+    if outputs[0] != (ex ? 1 : 0) {
+        set_error(`Expected {ex}.`)
+        return fail
+    }
+
+    if tick == 0xffff {
+        return win
+    }
+
+}

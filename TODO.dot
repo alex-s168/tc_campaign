@@ -5,7 +5,7 @@ digraph G {
     Unsigned_Less [color="green"]
 
     Decoder -> Controller -> Sign_Ext
-    ALU, Sign_Ext, Counter -> Wiring_Spagethi -> Flag Register -> ETCA_Address_Decoder -> ETCA_RAM -> Jumps -> MMIO -> New_Counter
+    ALU, Sign_Ext, Counter -> Wiring_Spagethi -> Flag Register -> ETCA_Address_Decoder -> ETCA_RAM -> Condition_Check -> Jumps -> MMIO -> New_Counter
     First_Tick -> New_Counter
     New_Counter -> Von_Neumann -> Combine_Ram1_and_Ram2 -> Latency_Ram
 
