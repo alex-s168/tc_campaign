@@ -1,10 +1,30 @@
 def get_input($scratch_space: [Int], tick: Int, $inputs: [Int]) {
 
-    inputs[0] = random(0xf)
+    inputs[0] = tick & 0b1111
+    inputs[1] = (tick >> 4) & 1
 
 }
 
 def check_output($scratch_space: [Int], tick: Int, inputs: [Int], outputs: [Int]) TestResult {
+
+/*
+0000 ADD     WSAF
+0001 SUB     WSAF
+0010 RSUB    WSAF
+0011 CMP     -SAF
+0100 OR      WSAF
+0101 XOR     WSAF
+0110 AND     WSAF
+0111 TEST    -SAF
+1000 MOVZ    W-A-
+1001 MOV     WSA-
+1010 LOAD    W--- Load
+1011 Store   ---- Store
+1100 SLO     W-A-
+1101 reserv  ????
+1110 READCR  W--- ReadCR
+1111 WRITECR ---- WriteCR
+*/
 
     let opcode = inputs[0]
     let is_jmp = inputs[1]
@@ -53,6 +73,8 @@ def check_output($scratch_space: [Int], tick: Int, inputs: [Int], outputs: [Int]
         is_alu = 1
     }
 
+    let write_flags = (~(opcode >> 3)) & 0b1
+
     let actual_load = outputs[0]
     let actual_store = outputs[1]
     let actual_readcr = outputs[2]
@@ -60,6 +82,7 @@ def check_output($scratch_space: [Int], tick: Int, inputs: [Int], outputs: [Int]
     let actual_sext = outputs[4]
     let actual_wb = outputs[5]
     let actual_alu = outputs[6]
+    let actual_write_flags = outputs[7]
 
     if opcode != 0b1101 {
         if actual_store != store {
@@ -74,6 +97,11 @@ def check_output($scratch_space: [Int], tick: Int, inputs: [Int], outputs: [Int]
 
         if actual_wb != write_res {
             set_error(`'Write' should be {write_res}.`)
+            return fail
+        }
+
+        if actual_write_flags != write_flags {
+            set_error(`'Write Flags' should be {write_flags}.`)
             return fail
         }
 
@@ -100,7 +128,7 @@ def check_output($scratch_space: [Int], tick: Int, inputs: [Int], outputs: [Int]
         }
     }
 
-    if tick == 0xffff {
+    if tick == 0x1f {
         return win
     }
 

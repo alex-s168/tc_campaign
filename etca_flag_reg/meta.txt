@@ -9,9 +9,5 @@ components_available = [com_on: -1, com_off: -1, com_and_bit: -1, com_and_3_bit:
 dialogue = [
   (alien, `We need to store the flags outputted by the ALU.
 
-If the controller says that it was an ALU op:
-- if the ALU outputs 'Write ZN':
-  - write the ALU Zero and Negative flag into the corresponding registers.
-- if the ALU outputs 'Write CV':
-  - write the ALU Carry and Overflow flag into the corresponding registers.
+If the controller outputs 'Write Flags', write the ALU flag outputs into the corresponding registers.
 `)]

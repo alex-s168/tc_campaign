@@ -2,6 +2,10 @@ def get_input($scratch_space: [Int], tick: Int, $inputs: [Int]) {
     inputs[0] = random(0xf)
     inputs[1] = random(0xffff)
     inputs[2] = random(0xffff)
+
+    if inputs[0] == 0b1100 {
+        inputs[2] = inputs[2] & 0b11111
+    }
 }
 
 def check_output($scratch_space: [Int], tick: Int, inputs: [Int], outputs: [Int]) TestResult {
@@ -86,16 +90,9 @@ def check_output($scratch_space: [Int], tick: Int, inputs: [Int], outputs: [Int]
         let actual_neg = outputs[2]
         let actual_carr = outputs[3]
         let actuall_overf = outputs[4]
-        let actual_zn = outputs[5]
-        let actual_cv = outputs[6]
 
         if actual_out != out {
             set_error(`Wrong 'Result'. Expected: {out}.`)
-            return fail
-        }
-
-        if test_zn != actual_zn {
-            set_error(`Wrong 'Write ZN'. Expected: {test_zn}`)
             return fail
         }
 
@@ -112,11 +109,6 @@ def check_output($scratch_space: [Int], tick: Int, inputs: [Int], outputs: [Int]
         }
 
         if !any_cv {
-            if test_cv != actual_cv {
-                set_error(`Wrong 'Write CV'. Expected: {test_cv}`)
-                return fail
-            }
-
             if test_cv == 1 {
                 if actual_carr != f_c {
                     set_error(`Wrong 'Carry'. Expected: {f_c}`)
