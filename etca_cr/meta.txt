@@ -1,106 +1,36 @@
 kind = sequential
 immutable_program = true
 immutable_spec = true
-title = "Von Neumann"
+title = "Control Registers"
 size = [-256, -256, 255, 255]
-copy_solution_to_level = ["etca_cr"]
 components_available = [com_on: -1, com_off: -1, com_and_bit: -1, com_and_3_bit: -1, com_switch_bit: -1, com_switch_word: -1, com_add: -1, com_constant: -1, com_equal: -1, com_less_s: -1, com_less_u: -1, com_mux: -1, com_nand_word: -1, com_not_word: -1, com_lsl: -1, com_lsr: -1, com_asr: -1, com_rol: -1, com_ror: -1, com_xor_word: -1, com_xnor_word: -1, com_counter: -1, com_decoder_1: -1, com_decoder_2: -1, com_decoder_3: -1, com_div: -1, com_mod: -1, com_delay_line_bit: -1, com_splitter_bit_2: -1, com_splitter_bit_4: -1, com_splitter_bit_8: -1, com_maker_bit_2: -1, com_maker_bit_4: -1, com_maker_bit_8: -1, com_full_adder: -1, com_mul: -1, com_nand_bit: -1, com_nor_bit: -1, com_not_bit: -1, com_splitter_word_2: -1, com_splitter_word_4: -1, com_splitter_word_8: -1, com_maker_word_2: -1, com_maker_word_4: -1, com_maker_word_8: -1, com_static_indexer: -1, com_static_indexer_config: -1, com_concatenator_2: -1, com_concatenator_4: -1, com_concatenator_8: -1, com_or_bit: -1, com_or_3_bit: -1, com_or_word: -1, com_and_word: -1, com_nor_word: -1, com_register_word: -1, com_delay_line_word: -1, com_register_bit: -1, com_inc: -1, com_neg: -1, com_xnor_bit: -1, com_xor_bit: -1, com_cc_input: -1, com_cc_output: -1, com_ram_fast: 4, com_load_port: 6, com_store_port: 4]
 
 dialogue = [
-  (alien, `For operating systems, we want to be able to execute code from the RAM.
+  (alien, `As last step towards a simple ETCA implementation, we need control registers.
 
-To do that, we need to make our programm counter load from any address, instead of just from the program component.
+We are only going to add support for the required control registers, which are read-only.
+That means that we can ignore the writecr instruction.
 
-We don't wan't to add a second load port to every RAM, because dual-port memory is expensive.
-Instead, we are going to use the same memory bus for instructions as for data.
-
-Replace the counter with the new extended counter (which has an initial value of 0x8000, which is the base address of the program component).
-
-Make your computer do this:
+(Read only) Control registers:
 [code]
-- Read from the memory bus (at the address of the counter) to get the instruction
-- Save that instruction into a register
-- set hold input on counter
-- Wait one tick
-- set reset input on timer
-- Perform calculation, load, or store
+id   name    value
+0000 cpuid1   0
+0001 cpuid2   0
+0010 feat    11
 [/code]
 
-To do that, use the timer component you built earlier.
+The feature control register is b11, because we support Von Neumann, and Unaligned Memory Access.
+`)]
 
-This will make the processor take 2 ticks per instructions, which is okay for now.
+post_mortem = [
+  (alien, `You just finished the base ETCA implementation! Time to add some additional features...
 `)]
 
 default_assembly = `
-    movz %rx0, 5
-    test %rx0, %rx0
-    jmp n, fail
-    jmp z, fail
-    jmp nz, test2
-    jmp fail
-
-test2:
-    cmp %rx0, 5
-    jmp ne, fail
-    add %rx0, %rx0
-    jmp v, fail
-    cmp %rx0, 5
-    jmp e, fail
-    cmp %rx0, 10
-    jmp ne, fail
-    jmp e, test3
-    jmp fail
-    jmp fail
-    jmp fail
-
-test3:
-    mov %rx0, -1
-    mov %rx5, 2
-    mov %rx6, 0b1000
-    slo %rx6, 0
-    mov [%rx6], %rx5
-    mov %rx5, 4
-    add %rx6, 2
-    mov [%rx6], %rx5
-    mov %rx6, 1
-    slo %rx6, 0b11111
-    slo %rx6, 0b11000
-    slo %rx6, 0
-    mov [%rx6], %rx0
-    mov %rx6, 0b1000
-    slo %rx6, 0
-    mov %rx0, [%rx6]
-    add %rx6, 2
-    mov %rx1, [%rx6]
-    mov %rx6, 1
-    slo %rx6, 0b11111
-    slo %rx6, 0b11000
-    slo %rx6, 0
-    mov %rx2, [%rx6]
-    cmp %rx0, 2
-    jmp ne, fail
-    jmp e, step2
-    jmp fail
-
-step2:
-    cmp %rx1, 4
-    jmp ne, fail
-    jmp e, step3
-    jmp fail
-
-step3:
-    cmp %rx2, -1
-    jmp ne, fail
-    jmp e, success
-    jmp fail
-
-fail:
-    mov %rx4, 2
-    jmp fail
-
-success:
+    mov %rx0, cpuid1
+    mov %rx1, cpuid2
+    mov %rx2, feat
     mov %rx4, 1
-    jmp success
 `
 
 default_isa_spec = `
@@ -143,9 +73,9 @@ cc
 "never" 1111
 
 r_cr
-cpuid1 0000
-cpuid2 0001
-feat   0010
+"cpuid1" 0000
+"cpuid2" 0001
+"feat"   0010
 
 w_cr
 
@@ -242,10 +172,10 @@ readcr %d(reg), [%i(immediate)]
 writecr [%i(immediate)], %d(reg)
 0101 1111 dddiiiii
 
-mov %d(reg), [%i(r_cr)]
+mov %d(reg), %i(r_cr)
 0101 1110 dddiiiii
 
-mov [%i(w_cr)], %d(reg)
+mov %i(w_cr), %d(reg)
 0101 1111 dddiiiii
 
 jmp %c(cc), %a(label | immediate)
