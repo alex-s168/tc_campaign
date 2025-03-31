@@ -19,18 +19,15 @@ Make your computer do this:
 [code]
 - Read from the memory bus (at the address of the counter) to get the instruction
 - Save that instruction into a register
-- Wait one tick
 - set hold input on counter
-- Perform calculation
-- If this is a load or store instruction:
-  - wait one tick
-  - set hold input on counter
-  - perform load / store
+- Wait one tick
+- set reset input on timer
+- Perform calculation, load, or store
 [/code]
 
 To do that, use the timer component you built earlier.
 
-This will make the processor take 2-3 ticks per instructions, which is okay for now.
+This will make the processor take 2 ticks per instructions, which is okay for now.
 `)]
 
 default_assembly = `
@@ -85,13 +82,13 @@ test3:
     jmp fail
 
 step2:
-    cmp %rx0, 4
+    cmp %rx1, 4
     jmp ne, fail
     jmp e, step3
     jmp fail
 
 step3:
-    cmp %rx0, -1
+    cmp %rx2, -1
     jmp ne, fail
     jmp e, success
     jmp fail
