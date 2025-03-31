@@ -3,7 +3,14 @@ def get_input($scratch_space: [Int], tick: Int, $inputs: [Int]) {
 }
 
 def check_output($scratch_space: [Int], tick: Int, inputs: [Int], outputs: [Int]) TestResult {
-    return win
+    if tick == 6 {
+        let r1 = get_register_value(1)
+        if r1 == 26 {
+            return win
+        }
+        set_error(`Expected r1 to have value 26`)
+        return fail
+    }
 }
 
 

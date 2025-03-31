@@ -15,16 +15,177 @@ Connect that to the decoder, and connect the decoder to the controller.
 
 Ignore load, store, readcr, and writecr for now.
 
+Set the width to 16 bits (BEFORE placing the RAM component)
 Place a RAM component as register file. There are 8 16 bit registers, which means that the RAM component needs to have 16 bytes.
+Link the register file to the program component.
 
 Connect two load ports and one write port (all 16 bits) to the register file.
 
 Load the two register arguments, and connect them to the ALU.
 If the controller outputs write result, write the result of the ALU into the register file.
 
-Also connect the register file to the program component.
-
 Make sure that the program component is at least 4096 bytes.
 
 Don't forget about immediates. If the controller outputs 'sign extend immediate', you have to sign extend the 5-bit immediate to 16 bits.
 `)]
+
+default_assembly = `
+movs %rx0, -1
+sub %rx0, -16
+add %rx0, -2
+mov %rx2, %rx1
+rsub %rx1, %rx0
+add %rx1, %rx2
+add %rx1, %rx0
+`
+
+default_isa_spec = `
+[settings]
+name = "ETC.A"
+
+[fields]
+reg
+"%rx0" 000
+"%rx1" 001
+"%rx2" 010
+"%rx3" 011
+"%rx4" 100
+"%rx5" 101
+"%rx6" 110
+"%rx7" 111
+
+cc
+z  0000
+e  0000
+nz 0001
+ne 0001
+n  0010
+p  0011
+nn 0011
+c  0100
+b  0100
+nc 0101
+ae 0101
+o  0110
+v  0110
+no 0111
+nv 0111
+be 1000
+a  1001
+l  1010
+ge 1011
+le 1100
+g  1101
+"" 1110
+never 1111
+
+r_cr
+cpuid1 0000
+cpuid2 0001
+feat   0010
+
+w_cr
+
+
+[instructions]
+
+add %d(reg), %r(reg)
+0001 0000 dddrrr00
+
+add %d(reg), %i:S5(immediate)
+0101 0000 dddiiiii
+
+sub %d(reg), %r(reg)
+0001 0001 dddrrr00
+
+sub %d(reg), %i:S5(immediate)
+0101 0001 dddiiiii
+
+rsub %d(reg), %r(reg)
+0001 0010 dddrrr00
+
+rsub %d(reg), %i:S5(immediate)
+0101 0010 dddiiiii
+
+sub %i:S5(immediate), %d(reg)
+0101 0010 dddiiiii
+
+cmp %d(reg), %r(reg)
+0001 0011 dddrrr00
+
+cmp %d(reg), %i:S5(immediate)
+0101 0011 dddiiiii
+
+or %d(reg), %r(reg)
+0001 0100 dddrrr00
+
+or %d(reg), %i:S5(immediate)
+0101 0100 dddiiiii
+
+xor %d(reg), %r(reg)
+0001 0101 dddrrr00
+
+xor %d(reg), %i:S5(immediate)
+0101 0101 dddiiiii
+
+and %d(reg), %r(reg)
+0001 0110 dddrrr00
+
+and %d(reg), %i:S5(immediate)
+0101 0110 dddiiiii
+
+test %d(reg), %r(reg)
+0001 0111 dddrrr00
+
+test %d(reg), %i:S5(immediate)
+0101 0111 dddiiiii
+
+movz %d(reg), %r(reg)
+0001 1000 dddrrr00
+
+movz %d(reg), %i(immediate)
+0101 1000 dddiiiii
+
+mov %d(reg), %r(reg)
+0001 1001 dddrrr00
+
+mov %d(reg), %i:S5(immediate)
+0101 1001 dddiiiii
+
+movs %d(reg), %r(reg)
+0001 1001 dddrrr00
+
+movs %d(reg), %i:S5(immediate)
+0101 1001 dddiiiii
+
+mov %d(reg), [%r(reg)]
+0001 1010 dddrrr00
+
+mov %d(reg), [%i(immediate)]
+0101 1010 dddiiiii
+
+mov [%r(reg)], %d(reg)
+0001 1011 dddrrr00
+
+mov [%i(immediate)], %d(reg)
+0101 1011 dddiiiii
+
+slo %d(reg), %i(immediate)
+0101 1011 dddiiiii
+
+readcr %d(reg), [%i(immediate)]
+0101 1110 dddiiiii
+
+writecr [%i(immediate)], %d(reg)
+0101 1111 dddiiiii
+
+mov %d(reg), [%i(r_cr)]
+0101 1110 dddiiiii
+
+mov [%i(w_cr)], %d(reg)
+0101 1111 dddiiiii
+
+jmp %c(cc) %a(label | immediate)
+%d = %a - $
+100d cccc dddddddd
+`
