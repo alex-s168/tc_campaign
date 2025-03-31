@@ -1,0 +1,137 @@
+def get_input($scratch_space: [Int], tick: Int, $inputs: [Int]) {
+
+    inputs[0] = tick & 0b1111
+    inputs[1] = (tick >> 4) & 1
+    inputs[2] = (random(8) == 0) ? 0 : 1
+
+}
+
+def check_output($scratch_space: [Int], tick: Int, inputs: [Int], outputs: [Int]) TestResult {
+
+/*
+0000 ADD     WSAF
+0001 SUB     WSAF
+0010 RSUB    WSAF
+0011 CMP     -SAF
+0100 OR      WSAF
+0101 XOR     WSAF
+0110 AND     WSAF
+0111 TEST    -SAF
+1000 MOVZ    W-A-
+1001 MOV     WSA-
+1010 LOAD    W--- Load
+1011 Store   ---- Store
+1100 SLO     W-A-
+1101 reserv  ????
+1110 READCR  W--- ReadCR
+1111 WRITECR ---- WriteCR
+*/
+
+    let opcode = inputs[0]
+    let is_jmp = inputs[1]
+    let enable = inputs[2]
+
+    var sign_ext_imm = (~(opcode >> 3)) & 0b1
+    if opcode == 0b1001 {
+        sign_ext_imm = 0b1
+    }
+
+    var write_res = 1
+    if (opcode & 0b11) == 0b11 {
+        write_res = 0
+    }
+
+    var load = 0
+    if opcode == 0b1010 {
+        load = 1
+    }
+
+    var store = 0
+    if opcode == 0b1011 {
+        store = 1
+    }
+
+    var readcr = 0
+    if opcode == 0b1110 {
+        readcr = 1
+    }
+
+    var writecr = 0
+    if opcode == 0b1111 {
+        writecr = 1
+    }
+
+    if (is_jmp == 1) || (enable == 0) {
+        writecr = 0
+        store = 0
+        write_res = 0
+    }
+
+    var is_alu = 0
+    if (opcode >> 3) == 0 {
+        is_alu = 1
+    }
+    if opcode == 0b1000 || opcode == 0b1001 || opcode == 0b1100 {
+        is_alu = 1
+    }
+
+    let write_flags = (~(opcode >> 3)) & 0b1
+
+    let actual_load = outputs[0]
+    let actual_store = outputs[1]
+    let actual_readcr = outputs[2]
+    let actual_writecr = outputs[3]
+    let actual_sext = outputs[4]
+    let actual_wb = outputs[5]
+    let actual_alu = outputs[6]
+    let actual_write_flags = outputs[7]
+
+    if opcode != 0b1101 {
+        if actual_store != store {
+            set_error(`'Store' should be {store}.`)
+            return fail
+        }
+
+        if actual_writecr != writecr {
+            set_error(`'Write CR' should be {writecr}.`)
+            return fail
+        }
+
+        if actual_wb != write_res {
+            set_error(`'Write' should be {write_res}.`)
+            return fail
+        }
+
+        if actual_write_flags != write_flags {
+            set_error(`'Write Flags' should be {write_flags}.`)
+            return fail
+        }
+
+        if (is_jmp == 0) && (enable == 1) {
+            if actual_load != load {
+                set_error(`'Load' should be {load}.`)
+                return fail
+            }
+
+            if actual_readcr != readcr {
+                set_error(`'Read CR' should be {readcr}.`)
+                return fail
+            }
+
+            if actual_sext != sign_ext_imm {
+                set_error(`'Sign Extend Immediate' should be {sign_ext_imm}.`)
+                return fail
+            }
+        
+            if actual_alu != is_alu {
+                set_error(`'Is ALU' should be {is_alu}.`)
+                return fail
+            }
+        }
+    }
+
+    if tick == 0x2f {
+        return win
+    }
+
+}
