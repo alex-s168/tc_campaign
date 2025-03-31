@@ -35,6 +35,7 @@ This will make the processor take 2-3 ticks per instructions, which is okay for 
 
 default_assembly = `
     movz %rx0, 5
+    test %rx0, %rx0
     jmp n, fail
     jmp z, fail
     jmp nz, test2
@@ -49,14 +50,59 @@ test2:
     jmp e, fail
     cmp %rx0, 10
     jmp ne, fail
+    jmp e, test3
+    jmp fail
+    jmp fail
+    jmp fail
 
-success:
-    mov %rx4, 1
-    jmp success
+test3:
+    mov %rx0, -1
+    mov %rx5, 2
+    mov %rx6, 0b1000
+    slo %rx6, 0
+    mov [%rx6], %rx5
+    mov %rx5, 4
+    add %rx6, 2
+    mov [%rx6], %rx5
+    mov %rx6, 1
+    slo %rx6, 0b11111
+    slo %rx6, 0b11000
+    slo %rx6, 0
+    mov [%rx6], %rx0
+    mov %rx6, 0b1000
+    slo %rx6, 0
+    mov %rx0, [%rx6]
+    add %rx6, 2
+    mov %rx1, [%rx6]
+    mov %rx6, 1
+    slo %rx6, 0b11111
+    slo %rx6, 0b11000
+    slo %rx6, 0
+    mov %rx2, [%rx6]
+    cmp %rx0, 2
+    jmp ne, fail
+    jmp e, step2
+    jmp fail
+
+step2:
+    cmp %rx0, 4
+    jmp ne, fail
+    jmp e, step3
+    jmp fail
+
+step3:
+    cmp %rx0, -1
+    jmp ne, fail
+    jmp e, success
+    jmp fail
 
 fail:
     mov %rx4, 2
     jmp fail
+
+success:
+    mov %rx4, 1
+    jmp success
 `
 
 default_isa_spec = `
@@ -190,7 +236,7 @@ mov [%i(immediate)], %d(reg)
 0101 1011 dddiiiii
 
 slo %d(reg), %i(immediate)
-0101 1011 dddiiiii
+0101 1100 dddiiiii
 
 readcr %d(reg), [%i(immediate)]
 0101 1110 dddiiiii

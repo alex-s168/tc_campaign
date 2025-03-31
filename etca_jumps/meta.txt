@@ -17,6 +17,7 @@ If the condition is true, and it is a jump instruction, sign extend the 9-bit ju
 
 default_assembly = `
     movz %rx0, 5
+    test %rx0, %rx0
     jmp n, fail
     jmp z, fail
     jmp nz, test2
@@ -172,7 +173,7 @@ mov [%i(immediate)], %d(reg)
 0101 1011 dddiiiii
 
 slo %d(reg), %i(immediate)
-0101 1011 dddiiiii
+0101 1100 dddiiiii
 
 readcr %d(reg), [%i(immediate)]
 0101 1110 dddiiiii
