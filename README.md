@@ -1,4 +1,4 @@
-# ETC.A Turing Complete Campaign
+# [ETC.A](https://github.com/ETC-A/etca-spec/) Turing Complete Campaign
 THIS ONLY WORKS ON THE `save_breaker` BRANCH!
 
 To get started, download the `all_directories.zip` from the latest release.
