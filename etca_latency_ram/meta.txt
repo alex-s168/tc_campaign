@@ -1,35 +1,18 @@
 kind = sequential
 immutable_program = true
 immutable_spec = true
-title = "Von Neumann"
+title = "Latency RAM"
 size = [-256, -256, 255, 255]
 next_level = "etca_campaign"
-copy_solution_to_level = ["etca_cr"]
-components_available = [com_on: -1, com_off: -1, com_and_bit: -1, com_and_3_bit: -1, com_switch_bit: -1, com_switch_word: -1, com_add: -1, com_constant: -1, com_equal: -1, com_less_s: -1, com_less_u: -1, com_mux: -1, com_nand_word: -1, com_not_word: -1, com_lsl: -1, com_lsr: -1, com_asr: -1, com_rol: -1, com_ror: -1, com_xor_word: -1, com_xnor_word: -1, com_counter: -1, com_decoder_1: -1, com_decoder_2: -1, com_decoder_3: -1, com_div: -1, com_mod: -1, com_delay_line_bit: -1, com_splitter_bit_2: -1, com_splitter_bit_4: -1, com_splitter_bit_8: -1, com_maker_bit_2: -1, com_maker_bit_4: -1, com_maker_bit_8: -1, com_full_adder: -1, com_mul: -1, com_nand_bit: -1, com_nor_bit: -1, com_not_bit: -1, com_splitter_word_2: -1, com_splitter_word_4: -1, com_splitter_word_8: -1, com_maker_word_2: -1, com_maker_word_4: -1, com_maker_word_8: -1, com_static_indexer: -1, com_static_indexer_config: -1, com_concatenator_2: -1, com_concatenator_4: -1, com_concatenator_8: -1, com_or_bit: -1, com_or_3_bit: -1, com_or_word: -1, com_and_word: -1, com_nor_word: -1, com_register_word: -1, com_delay_line_word: -1, com_register_bit: -1, com_inc: -1, com_neg: -1, com_xnor_bit: -1, com_xor_bit: -1, com_cc_input: -1, com_cc_output: -1, com_ram_fast: 4, com_load_port: 6, com_store_port: 4]
+components_available = [com_on: -1, com_off: -1, com_and_bit: -1, com_and_3_bit: -1, com_switch_bit: -1, com_switch_word: -1, com_add: -1, com_constant: -1, com_equal: -1, com_less_s: -1, com_less_u: -1, com_mux: -1, com_nand_word: -1, com_not_word: -1, com_lsl: -1, com_lsr: -1, com_asr: -1, com_rol: -1, com_ror: -1, com_xor_word: -1, com_xnor_word: -1, com_counter: -1, com_decoder_1: -1, com_decoder_2: -1, com_decoder_3: -1, com_div: -1, com_mod: -1, com_delay_line_bit: -1, com_splitter_bit_2: -1, com_splitter_bit_4: -1, com_splitter_bit_8: -1, com_maker_bit_2: -1, com_maker_bit_4: -1, com_maker_bit_8: -1, com_full_adder: -1, com_mul: -1, com_nand_bit: -1, com_nor_bit: -1, com_not_bit: -1, com_splitter_word_2: -1, com_splitter_word_4: -1, com_splitter_word_8: -1, com_maker_word_2: -1, com_maker_word_4: -1, com_maker_word_8: -1, com_static_indexer: -1, com_static_indexer_config: -1, com_concatenator_2: -1, com_concatenator_4: -1, com_concatenator_8: -1, com_or_bit: -1, com_or_3_bit: -1, com_or_word: -1, com_and_word: -1, com_nor_word: -1, com_register_word: -1, com_delay_line_word: -1, com_register_bit: -1, com_inc: -1, com_neg: -1, com_xnor_bit: -1, com_xor_bit: -1, com_cc_input: -1, com_cc_output: -1, com_ram_fast: 1, com_ram_latency: 3, com_load_port: 6, com_store_port: 4]
 
 dialogue = [
-  (alien, `For operating systems, we want to be able to execute code from the RAM.
+  (alien, `We just got access to a better chip manifacturing technology, which allows us to run the processor way faster.
+However, our current RAM can't keep up, so we had to slow down the processor. Sadly, faster RAM is out of our budget.
+We want you to modify the processor to use RAM that takes multiple ticks to read from / write to.
 
-To do that, we need to make our programm counter load from any address, instead of just from the program component.
-
-We don't wan't to add a second load port to every RAM, because dual-port memory is expensive.
-Instead, we are going to use the same memory bus for instructions as for data.
-
-Replace the counter with the new extended counter (which has an initial value of 0x8000, which is the base address of the program component).
-
-Make your computer do this:
-[code]
-- Read from the memory bus (at the address of the counter) to get the instruction
-- Save that instruction into a register
-- set hold input on counter
-- Wait one tick
-- set reset input on timer
-- Perform calculation, load, or store
-[/code]
-
-To do that, use the timer component you built earlier.
-
-This will make the processor take 2 ticks per instructions, which is okay for now.
+Replace the RAM components (including the assembler) with Latency RAM components.
+As long as the hold output of the selected RAM component is [ON], set the hold input to the timer.
 `)]
 
 default_assembly = `

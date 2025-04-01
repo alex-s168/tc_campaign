@@ -1,6 +1,7 @@
 kind = sequential
 title = "ETC.A Decoder"
 size = [-64, -64, 64, 64]
+next_level = "etca_campaign"
 copy_solution_to_factory = "ETCA/Decoder"
 input_labels = ["Instruction"]
 output_labels = ["Operation Size",

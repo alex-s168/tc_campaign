@@ -1,6 +1,7 @@
 kind = sequential
 title = "ETC.A Controller"
 size = [-64, -64, 64, 64]
+next_level = "etca_campaign"
 copy_solution_to_factory = "ETCA/ExController"
 input_labels = ["Op Code", "Is Jump", "Enable"]
 output_labels = ["Load", "Store", "Read CR", "Write CR", "Sign Extend Imm", "Write Result", "ALU OP", "Write Flags"]
