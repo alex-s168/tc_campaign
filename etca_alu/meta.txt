@@ -2,7 +2,6 @@ kind = sequential
 title = "ETC.A ALU"
 size = [-64, -64, 64, 64]
 copy_solution_to_factory = "ETCA/ALU"
-next_level = "etca_campaign"
 input_labels = ["OpCode", "Operand A", "Operand B"]
 output_labels = ["Result",
                  "Zero", "Negative", "Carry", "Overflow"]

@@ -1,7 +1,6 @@
 kind = sequential
 title = "Timer"
 size = [-32, -32, 32, 32]
-next_level = "etca_campaign"
 copy_solution_to_factory = "ETCA/Timer"
 input_labels = ["Hold", "Reset"]
 output_labels = ["Stage 1", "Stage 2", "Stage 3"]

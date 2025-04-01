@@ -1,7 +1,6 @@
 kind = sequential
 title = "Sign Extension"
 size = [-32, -32, 32, 32]
-next_level = "etca_campaign"
 copy_solution_to_factory = "ETCA/5bit-sign-extend"
 input_labels = ["Value", "Sign Extend?"]
 output_labels = ["Output"]
