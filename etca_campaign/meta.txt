@@ -8,5 +8,5 @@ no_panel = true
 no_controls = true
 no_state_ui = true
 dialogue = [
-  (alien_centered, "We want a more advanced instruction set. The best choice for that is ETCA, an extensible and minimal instruction set,")
+  (alien_centered, "We want a more advanced instruction set. The best choice for that is ETCA, an extensible and minimal instruction set.")
 ]

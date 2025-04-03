@@ -1,0 +1,34 @@
+const NEXT_INP = 0
+const NEXT_OUT = 1
+
+def on_reset($scratch_space: [Int], test: Int) {
+    scratch_space[NEXT_INP] = 10
+    scratch_space[NEXT_OUT] = 10
+}
+
+def arch_get_input($scratch_space: [Int], test: Int) Int {
+    let o = scratch_space[NEXT_INP]
+    scratch_space[NEXT_INP] = o + 1
+    return o
+}
+
+def arch_check_output($scratch_space: [Int], test: Int, input: Int, output: Int) TestResult {
+
+    if scratch_space[NEXT_INP] != 12 {
+        return fail
+    }
+
+    let exp_out = scratch_space[NEXT_OUT]
+    if exp_out > 11 {
+        return fail
+    }
+    if output != exp_out {
+        return fail
+    }
+    scratch_space[NEXT_OUT] = exp_out + 1
+
+    if exp_out == 11 {
+        return win
+    }
+
+}
