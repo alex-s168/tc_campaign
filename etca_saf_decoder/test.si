@@ -1,0 +1,106 @@
+def get_input($scratch_space: [Int], tick: Int, $inputs: [Int]) {
+
+    inputs[0] = random(0xffffffff)
+
+}
+
+def check_output($scratch_space: [Int], tick: Int, inputs: [Int], outputs: [Int]) TestResult {
+
+    let instruction     =  inputs[0]
+    let ss              = (instruction >> 12) & 0b11
+    var cccc            = (instruction >>  8) & 0b1111
+    let ooo             = (instruction >>  5) & 0b111
+    let rrr             = (instruction >>  2) & 0b111
+    let mm              =  instruction        & 0b11
+    let is_imm          = (instruction >> 14) & 0b1
+    let imm_v           =  instruction        & 0b11111
+    let disp9           =  (instruction & 0xff) | (((instruction >> 12) & 0b1) << 8)
+    let is_jmp          = (instruction >> 15) & 0b1
+    let is_rel9c_jmp    = ((instruction >> 13) & 0b111) == 0b100
+    let is_regc_jmp_or_call = ((instruction >> 12) & 0b1111) == 0b1010
+    let is_rel12_call       = ((instruction >> 12) & 0b1111) == 0b1011
+
+    var disp12 = disp9
+    if ((disp9 >> 8) & 1) == 1 {
+        disp12 = 0b111000000000 | disp9
+    }
+
+    var is_call = 0
+    let is_jmp_to_reg = <Int>(is_regc_jmp_or_call)
+
+    if is_regc_jmp_or_call {
+        cccc = instruction & 0b1111
+        disp12 = instruction & 0b111111111
+        if ((instruction >> 4) & 1) == 1 {
+            is_call = 1
+        }
+    }
+    if is_rel12_call {
+        cccc = 0b1110
+        is_call = 1
+    }
+
+    if outputs[0] != ss {
+        set_error(`Operation Size should be {ss}.`)
+        return fail
+    }
+
+    if !is_rel12_call {
+        if outputs[1] != cccc {
+            set_error(`OpCode / Jump Condition should be {cccc}.`)
+            return fail
+        }
+    }
+
+    if outputs[2] != ooo {
+        set_error(`Destination Register should be {ooo}.`)
+        return fail
+    }
+
+    if outputs[3] != rrr {
+        set_error(`Source Register should be {rrr}.`)
+        return fail
+    }
+
+    if outputs[4] != mm {
+        set_error(`Memory Addressing Mode should be {mm}.`)
+        return fail
+    }
+
+    if outputs[5] != is_imm {
+        set_error(`'Is immediate' should be {is_imm}.`)
+        return fail
+    }
+
+    if outputs[6] != imm_v {
+        set_error(`Immediate value should be {imm_v}.`)
+        return fail
+    }
+
+    if outputs[8] != is_jmp {
+        set_error(`'Is Jump' should be {is_jmp}.`)
+        return fail
+    }
+
+    if outputs[9] != is_call {
+        set_error(`'Is Call' should be {is_call}.`)
+        return fail
+    }
+
+    if outputs[10] != is_jmp_to_reg {
+        set_error(`'Is Jump To Register' should be {is_jmp_to_reg}.`)
+        return fail
+    }
+
+    if is_rel9c_jmp || is_rel12_call {
+        if outputs[7] != disp12 {
+            set_error(`Jump Displacement should be {disp12}.`)
+            return fail
+        }
+    }
+
+    if tick == 0x3ffff {
+        return win
+    }
+
+}
